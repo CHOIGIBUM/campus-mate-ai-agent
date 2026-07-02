@@ -23,7 +23,7 @@
 ```json
 {
   "fit_score": 88,
-  "submission_deadline": "2026-07-15T23:59:00+09:00",
+  "submission_deadline": "2026-07-07T23:59:00+09:00",
   "today": "2026-07-02"
 }
 ```
@@ -33,8 +33,8 @@
 ```json
 {
   "priority": "긴급",
-  "d_day": 13,
-  "priority_reason": "D-13 within 7 days AND fit_score >= 75"
+  "d_day": 5,
+  "priority_reason": "D-5이며 D-7 이내 AND fit_score >= 75"
 }
 ```
 

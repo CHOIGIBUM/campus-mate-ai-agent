@@ -304,15 +304,15 @@ Google Calendar 이벤트
 workspace/
 ├─ ./.pi/
 │  ├─ agents/ (7개 Agent 정의)
-│  │  ├─ profile-agent/{AGENT.md, spec.md}
-│  │  ├─ source-collector-agent/{AGENT.md, spec.md}
-│  │  ├─ multipass-parser-agent/{AGENT.md, spec.md}
-│  │  ├─ fit-priority-agent/{AGENT.md, spec.md}
-│  │  ├─ notion-dashboard-agent/{AGENT.md, spec.md}
-│  │  ├─ calendar-scheduler-agent/{AGENT.md, spec.md}
-│  │  └─ kakao-report-agent/{AGENT.md, spec.md}
+│  │  ├─ profile-agent/{AGENT.md}
+│  │  ├─ source-collector-agent/{AGENT.md}
+│  │  ├─ multipass-parser-agent/{AGENT.md}
+│  │  ├─ fit-priority-agent/{AGENT.md}
+│  │  ├─ notion-dashboard-agent/{AGENT.md}
+│  │  ├─ calendar-scheduler-agent/{AGENT.md}
+│  │  └─ kakao-report-agent/{AGENT.md}
 │  │
-│  └─ skills/ (15개 Skill 정의)
+│  └─ skills/ (14개 워크플로우 Skill 정의)
 │     ├─ profile-build/{SKILL.md, spec.md}
 │     ├─ interest-keyword-expand/{SKILL.md, spec.md}
 │     ├─ source-watchlist-crawl/{SKILL.md, spec.md}
@@ -605,7 +605,7 @@ workspace/
 | 항목 | 내용 |
 |------|------|
 | **Agent 수** | 7개 |
-| **Skill 수** | 15개 |
+| **Skill 수** | 14개 워크플로우 Skill |
 | **자동화 포인트** | 3개 (수집, 분석, 일일보고) |
 | **수동 개입 포인트** | 1개 (Notion에서 Accept/Hold/Reject 선택) |
 | **주요 트리거** | Scheduler (08:00), Notion Status (Accept 감지), 자동 연쇄 |

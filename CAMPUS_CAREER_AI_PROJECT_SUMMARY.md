@@ -66,7 +66,7 @@
 
 ---
 
-## 🛠️ 구성: 15개 Skills
+## 🛠️ 구성: 14개 워크플로우 Skills
 
 ### 데이터 수집 & 파싱
 
@@ -99,25 +99,18 @@
 ./.pi/
 ├── agents/
 │   ├── profile-agent/
-│   │   ├── spec.md
 │   │   └── AGENT.md
 │   ├── source-collector-agent/
-│   │   ├── spec.md
 │   │   └── AGENT.md
 │   ├── multipass-parser-agent/
-│   │   ├── spec.md
 │   │   └── AGENT.md
 │   ├── fit-priority-agent/
-│   │   ├── spec.md
 │   │   └── AGENT.md
 │   ├── notion-dashboard-agent/
-│   │   ├── spec.md
 │   │   └── AGENT.md
 │   ├── calendar-scheduler-agent/
-│   │   ├── spec.md
 │   │   └── AGENT.md
 │   └── kakao-report-agent/
-│       ├── spec.md
 │       └── AGENT.md
 │
 └── skills/
@@ -206,9 +199,9 @@
 
 ## 📋 각 Spec의 주요 내용
 
-### Agent Specs
+### Agent 정의
 
-각 Agent의 **spec.md**에는:
+각 Agent의 **AGENT.md**에는:
 - **목표**: 한 문장 정의
 - **맥락**: 대상과 사용 목적
 - **범위**: 포함/제외 사항
@@ -268,4 +261,4 @@
 - **양식 템플릿**: `spec_template.md`
 - **이 요약**: `CAMPUS_CAREER_AI_PROJECT_SUMMARY.md`
 
-각 Agent와 Skill의 상세 내용은 `./.pi/agents/*/spec.md`, `./.pi/skills/*/spec.md`를 참고하세요.
+각 Agent와 Skill의 상세 내용은 `./.pi/agents/*/AGENT.md`, `./.pi/skills/*/spec.md`를 참고하세요.

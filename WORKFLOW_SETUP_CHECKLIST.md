@@ -1,14 +1,14 @@
 # Campus Career AI - 워크플로우 설정 완료 체크리스트
 
-## ✅ 완성된 항목
+## ✅ 정의/설정 완료 항목
 
 ### 📋 설계 문서
 - [x] WORKFLOW_ARCHITECTURE.md - 전체 플로우, 다이어그램, 상태머신, 의존성
-- [x] AGENT_SKILL_MAPPING.md - 7개 Agent × 15개 Skill의 상세 매핑
+- [x] AGENT_SKILL_MAPPING.md - 7개 Agent × 14개 워크플로우 Skill의 상세 매핑
 - [x] WORKFLOW_QUICK_REFERENCE.md - 빠른 참조 가이드
 - [x] CAMPUS_CAREER_AI_PROJECT_SUMMARY.md - 프로젝트 개요 (2주차 작성)
 
-### 🤖 7개 Agents (각 Agent.md + spec.md)
+### 🤖 7개 Agents (각 AGENT.md)
 - [x] profile-agent (프로필 관리)
 - [x] source-collector-agent (공고 수집)
 - [x] multipass-parser-agent (3단계 파싱)
@@ -17,7 +17,7 @@
 - [x] calendar-scheduler-agent (Google Calendar)
 - [x] kakao-report-agent (일일 보고, Cron: 08:00)
 
-### 🛠️ 15개 Skills (각 SKILL.md + spec.md)
+### 🛠️ 14개 워크플로우 Skills (각 SKILL.md + spec.md)
 
 **데이터 수집 & 파싱 (7개)**
 - [x] profile-build
@@ -32,7 +32,7 @@
 - [x] fit-score-rank
 - [x] deadline-priority-rank
 
-**외부 연동 (6개)**
+**외부 연동 (5개)**
 - [x] notion-dashboard-sync
 - [x] calendar-freebusy-check
 - [x] calendar-event-create
@@ -309,7 +309,7 @@ MVP 완성으로 인정하는 조건:
 │  └─ 상세 아키텍처, 플로우 다이어그램, 상태머신, 의존성
 │
 ├─ AGENT_SKILL_MAPPING.md
-│  └─ 7개 Agent × 15개 Skill의 상세 매핑
+│  └─ 7개 Agent × 14개 워크플로우 Skill의 상세 매핑
 │  └─ 각 Skill의 입출력 JSON 형식
 │
 ├─ WORKFLOW_QUICK_REFERENCE.md
@@ -320,8 +320,8 @@ MVP 완성으로 인정하는 조건:
 │
 └─ ./.pi/
    ├─ agents/
-   │  └─ [7개 Agent]/AGENT.md + spec.md
+   │  └─ [7개 Agent]/AGENT.md
    └─ skills/
-      └─ [15개 Skill]/SKILL.md + spec.md
+      └─ [14개 워크플로우 Skill]/SKILL.md + spec.md
 ```
 

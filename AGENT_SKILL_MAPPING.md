@@ -412,7 +412,7 @@
         "category": "일정 가능성",
         "max_score": 10,
         "earned": 10,
-        "reason": "마감 D-13, 충분한 준비 시간"
+        "reason": "마감 D-5, 즉시 준비 필요"
       },
       {
         "category": "지역/온오프라인",
@@ -433,7 +433,7 @@
 입력:
   {
     "fit_score": 88,
-    "submission_deadline": "2026-07-15T23:59:00+09:00",
+    "submission_deadline": "2026-07-07T23:59:00+09:00",
     "today": "2026-07-02",
     "user_profile": {...}
   }
@@ -441,14 +441,14 @@
 출력:
   {
     "priority": "긴급",
-    "d_day": 13,
-    "priority_reason": "D-13 (7일 이내 조건 확인 필요) AND fit_score 88점 (75점 이상)",
+    "d_day": 5,
+    "priority_reason": "D-5 (7일 이내) AND fit_score 88점 (75점 이상)",
     "priority_category": "긴급 (D-7 이내 AND 적합도 75점 이상)",
     "timeline": {
       "today": "2026-07-02",
-      "d_minus_7": "2026-07-08",
-      "d_minus_5": "2026-07-10",
-      "d_day": "2026-07-15"
+      "d_minus_7": "2026-06-30",
+      "d_minus_5": "2026-07-02",
+      "d_day": "2026-07-07"
     }
   }
 
@@ -483,7 +483,7 @@
     "recommendation_reason": [
       "AI융합학과, 의료AI, 데이터 분석 관심 분야와 관련",
       "대학생 참가 가능",
-      "마감까지 D-13, 충분한 준비 시간"
+      "마감까지 D-5, 즉시 준비 필요"
     ],
     "eligibility_status": "가능",
     "calendar_conflict_status": "no_conflict"
@@ -782,7 +782,7 @@ calendar_event_created 구조:
         "title": "의료 데이터 AI 해커톤",
         "fit_score": 88,
         "priority": "긴급",
-        "d_day": 13,
+        "d_day": 5,
         "reason": "AI융합학과, 의료AI 관심 분야와 관련"
       },
       ...
@@ -805,7 +805,7 @@ calendar_event_created 구조:
   # [Campus Career AI] 최기범님 기준 오늘의 공모전 브리핑
 
   ## 🔥 긴급 마감
-  - 의료 데이터 AI 해커톤 (D-13) | 온라인 해커톤
+  - 의료 데이터 AI 해커톤 (D-5) | 온라인 해커톤
 
   ## ⭐ 신규 추천 (3건)
   1. 의료 데이터 AI 해커톤 — 의료AI, 데이터 분석 관심 분야 (적합도 88점)
