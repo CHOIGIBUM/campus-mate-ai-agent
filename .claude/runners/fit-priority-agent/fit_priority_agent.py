@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Tuple
 
 ROOT = Path(__file__).resolve().parents[3]
 for skill_name in ["interest-keyword-expand", "fit-score-rank", "deadline-priority-rank"]:
-    sys.path.insert(0, str(ROOT / ".pi" / "skills" / skill_name))
+    sys.path.insert(0, str(ROOT / ".claude" / "skills" / skill_name))
 
 from deadline_priority_rank import DeadlinePriorityRankSkill  # noqa: E402
 from fit_score_rank import FitScoreRankSkill  # noqa: E402

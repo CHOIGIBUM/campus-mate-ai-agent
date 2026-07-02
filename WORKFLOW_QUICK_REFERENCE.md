@@ -223,6 +223,7 @@ Day 4:
 
 - `WORKFLOW_ARCHITECTURE.md` — 상세 아키텍처 (흐름도, 상태머신, 의존성)
 - `AGENT_SKILL_MAPPING.md` — 각 Agent의 Skills 호출 순서 & 입출력
-- `./.pi/agents/*/AGENT.md` — 각 Agent 역할 정의
-- `./.pi/skills/*/spec.md` — 각 Skill 상세 스펙
+- `./.claude/agents/*.md` — 각 Agent 역할 정의
+- `./.claude/runners/*/main.py` — 로컬 MVP 실행 진입점
+- `./.claude/skills/*/spec.md` — 각 Skill 상세 스펙
 

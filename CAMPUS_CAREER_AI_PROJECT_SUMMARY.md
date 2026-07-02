@@ -17,48 +17,55 @@
 
 ### 1. **Profile Agent** (프로필 관리)
 - 역할: 사용자 온보딩 정보 구조화
-- 위치: `./.pi/agents/profile-agent/`
+- 정의: `./.claude/agents/profile-agent.md`
+- 실행: `./.claude/runners/profile-agent/`
 - 담당 Task: 이름, 학과, 학년, 관심 분야, 희망 직무, 지역, 가능 시간 입력 및 JSON 저장
 - 의존 Skill: `profile-build`
 
 ### 2. **Source Collector Agent** (공고 수집)
 - 역할: 7개 사이트에서 신규 공고 URL 수집
-- 위치: `./.pi/agents/source-collector-agent/`
+- 정의: `./.claude/agents/source-collector-agent.md`
+- 실행: `./.claude/runners/source-collector-agent/`
 - 담당 Task: 매일 정해진 시간에 링커리어, 씽굿, 온오프믹스, 데이콘, 위비티, 대학교 공지, 공유대학 순회
 - 의존 Skill: `source-watchlist-crawl`
 - 스케줄: 사용자 프로필 지정 시간 (기본 08:00)
 
 ### 3. **Multi-pass Parser Agent** (3단계 파싱)
 - 역할: HTML, OCR, Vision 3가지 방식으로 공고 정보 추출
-- 위치: `./.pi/agents/multipass-parser-agent/`
+- 정의: `./.claude/agents/multipass-parser-agent.md`
+- 실행: `./.claude/runners/multipass-parser-agent/`
 - 담당 Task: HTML 파싱 → 렌더링/OCR → 포스터 이미지 분석
 - 의존 Skills: `html-opportunity-parse`, `rendered-page-ocr`, `poster-vision-extract`, `schema-merge-and-validate`
 - 출력: 근거와 신뢰도를 포함한 JSON
 
 ### 4. **Fit & Priority Agent** (개인화 추천)
 - 역할: 사용자 프로필과 공고 비교하여 적합도 점수 및 우선순위 계산
-- 위치: `./.pi/agents/fit-priority-agent/`
+- 정의: `./.claude/agents/fit-priority-agent.md`
+- 실행: `./.claude/runners/fit-priority-agent/`
 - 담당 Task: 전공, 관심 분야, 희망 직무, 자격, 일정, 지역 기준 점수 계산
 - 의존 Skills: `interest-keyword-expand`, `fit-score-rank`, `deadline-priority-rank`
 - 출력: fit_score (0–100), priority (긴급/중요/참고), recommendation_reason
 
 ### 5. **Notion Dashboard Agent** (Notion 현황판)
 - 역할: Notion 데이터베이스 관리 및 사용자 상태 변경 감지
-- 위치: `./.pi/agents/notion-dashboard-agent/`
+- 정의: `./.claude/agents/notion-dashboard-agent.md`
+- 실행: `./.claude/runners/notion-dashboard-agent/`
 - 담당 Task: 공고 카드 생성/갱신, Accept 상태 감지 및 동기화
 - 의존 Skill: `notion-dashboard-sync`, `accept-state-sync`
 - 모니터링: 1분 주기로 Status 필드 변경 감지
 
 ### 6. **Calendar Scheduler Agent** (Google Calendar 일정화)
 - 역할: Accept된 공고의 마감일, 행사일, 준비 일정 생성
-- 위치: `./.pi/agents/calendar-scheduler-agent/`
+- 정의: `./.claude/agents/calendar-scheduler-agent.md`
+- 실행: `./.claude/runners/calendar-scheduler-agent/`
 - 담당 Task: 일정 생성, 충돌 검사, 준비 일정 역산 (D-5~D-1)
 - 의존 Skills: `calendar-freebusy-check`, `calendar-event-create`
 - 충돌 감지 시 Kakao 보고 큐 추가
 
 ### 7. **Kakao Report Agent** (일일 보고)
 - 역할: 신규 추천, 긴급 마감, 충돌, 확인 필요 항목을 메시지로 생성
-- 위치: `./.pi/agents/kakao-report-agent/`
+- 정의: `./.claude/agents/kakao-report-agent.md`
+- 실행: `./.claude/runners/kakao-report-agent/`
 - 담당 Task: 매일 정해진 시간에 보고 메시지 생성 및 전송
 - 의존 Skill: `kakao-brief-generate`
 - 스케줄: 사용자 프로필 보고_시간 (기본 08:00)
@@ -66,7 +73,9 @@
 
 ---
 
-## 🛠️ 구성: 14개 워크플로우 Skills
+## 🛠️ 구성: 15개 Campus Career Skills
+
+`campus-career-orchestrator` 1개가 전체 실행 순서를 조율하고, 아래 14개 workflow Skill이 실제 작업 단위를 담당합니다.
 
 ### 데이터 수집 & 파싱
 
@@ -96,24 +105,27 @@
 ## 📂 파일 구조
 
 ```
-./.pi/
+./.claude/
 ├── agents/
+│   ├── profile-agent.md
+│   ├── source-collector-agent.md
+│   ├── multipass-parser-agent.md
+│   ├── fit-priority-agent.md
+│   ├── notion-dashboard-agent.md
+│   ├── calendar-scheduler-agent.md
+│   └── kakao-report-agent.md
+│
+├── runners/
 │   ├── profile-agent/
-│   │   └── AGENT.md
 │   ├── source-collector-agent/
-│   │   └── AGENT.md
 │   ├── multipass-parser-agent/
-│   │   └── AGENT.md
 │   ├── fit-priority-agent/
-│   │   └── AGENT.md
 │   ├── notion-dashboard-agent/
-│   │   └── AGENT.md
 │   ├── calendar-scheduler-agent/
-│   │   └── AGENT.md
 │   └── kakao-report-agent/
-│       └── AGENT.md
 │
 └── skills/
+    ├── campus-career-orchestrator/
     ├── profile-build/
     │   ├── spec.md
     │   └── SKILL.md
@@ -201,7 +213,7 @@
 
 ### Agent 정의
 
-각 Agent의 **AGENT.md**에는:
+각 Agent markdown에는:
 - **목표**: 한 문장 정의
 - **맥락**: 대상과 사용 목적
 - **범위**: 포함/제외 사항
@@ -261,4 +273,4 @@
 - **양식 템플릿**: `spec_template.md`
 - **이 요약**: `CAMPUS_CAREER_AI_PROJECT_SUMMARY.md`
 
-각 Agent와 Skill의 상세 내용은 `./.pi/agents/*/AGENT.md`, `./.pi/skills/*/spec.md`를 참고하세요.
+각 Agent와 Skill의 상세 내용은 `./.claude/agents/*.md`, `./.claude/skills/*/spec.md`를 참고하세요.

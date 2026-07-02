@@ -17,7 +17,7 @@
 ```
 
 **커밋된 파일:**
-- 7개 Agent 정의 파일 (AGENT.md)
+- 7개 Agent 정의 파일 (`.claude/agents/*.md`)
 - 14개 워크플로우 Skill 설계 스펙 (SKILL.md, spec.md)
 - 워크플로우 아키텍처 문서 (5개)
 - 선택지 데이터 (6개 JSON 파일)
@@ -109,10 +109,11 @@ fatal: unable to access 'https://github.com/CHOIGIBUM/Nexus_Harness_Eng.git/': T
 - `WORKFLOW_ARCHITECTURE.md` - 전체 플로우 다이어그램
 - `AGENT_SKILL_MAPPING.md` - 7×14 워크플로우 매핑 테이블
 - `PROFILE_AGENT_*.md` - Profile Agent 설계/구현 보고서
-- `.pi/agents/*/AGENT.md` - 7개 Agent 정의
-- `.pi/skills/*/spec.md` - 14개 워크플로우 Skill 스펙
+- `.claude/agents/*.md` - 7개 Agent 정의
+- `.claude/runners/*/main.py` - 로컬 MVP 실행 진입점
+- `.claude/skills/*/spec.md` - 14개 워크플로우 Skill 스펙
 - `data/choices/*.json` - 103개 선택지 데이터
-- `.pi/skills/profile-build/profile_build.py` - Skill 코드
+- `.claude/skills/profile-build/profile_build.py` - Skill 코드
 
 ---
 

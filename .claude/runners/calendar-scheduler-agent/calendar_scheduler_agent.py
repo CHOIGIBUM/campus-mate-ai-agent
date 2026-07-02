@@ -15,7 +15,7 @@ for skill_name in [
     "calendar-freebusy-check",
     "calendar-event-create",
 ]:
-    sys.path.insert(0, str(ROOT / ".pi" / "skills" / skill_name))
+    sys.path.insert(0, str(ROOT / ".claude" / "skills" / skill_name))
 
 from accept_state_sync import AcceptStateSyncSkill  # noqa: E402
 from calendar_event_create import CalendarEventCreateSkill  # noqa: E402

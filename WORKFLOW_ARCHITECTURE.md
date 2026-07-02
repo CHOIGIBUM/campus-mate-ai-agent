@@ -20,7 +20,7 @@
     │  출력: user_profile_{id}.json        │
     └──────────────────────────────────────┘
                 ↓
-                ↓ (저장: ./.pi/data/profiles/)
+                ↓ (저장: ./data/profiles/)
                 ↓
 
 [자동화 수집 단계 - 매일 08:00 (또는 사용자 지정시간)]
@@ -302,17 +302,27 @@ Google Calendar 이벤트
 
 ```
 workspace/
-├─ ./.pi/
+├─ ./.claude/
 │  ├─ agents/ (7개 Agent 정의)
-│  │  ├─ profile-agent/{AGENT.md}
-│  │  ├─ source-collector-agent/{AGENT.md}
-│  │  ├─ multipass-parser-agent/{AGENT.md}
-│  │  ├─ fit-priority-agent/{AGENT.md}
-│  │  ├─ notion-dashboard-agent/{AGENT.md}
-│  │  ├─ calendar-scheduler-agent/{AGENT.md}
-│  │  └─ kakao-report-agent/{AGENT.md}
+│  │  ├─ profile-agent.md
+│  │  ├─ source-collector-agent.md
+│  │  ├─ multipass-parser-agent.md
+│  │  ├─ fit-priority-agent.md
+│  │  ├─ notion-dashboard-agent.md
+│  │  ├─ calendar-scheduler-agent.md
+│  │  └─ kakao-report-agent.md
 │  │
-│  └─ skills/ (14개 워크플로우 Skill 정의)
+│  ├─ runners/ (로컬 실행 코드)
+│  │  ├─ profile-agent/
+│  │  ├─ source-collector-agent/
+│  │  ├─ multipass-parser-agent/
+│  │  ├─ fit-priority-agent/
+│  │  ├─ notion-dashboard-agent/
+│  │  ├─ calendar-scheduler-agent/
+│  │  └─ kakao-report-agent/
+│  │
+│  └─ skills/ (오케스트레이터 1개 + 14개 워크플로우 Skill 정의)
+│     ├─ campus-career-orchestrator/{SKILL.md}
 │     ├─ profile-build/{SKILL.md, spec.md}
 │     ├─ interest-keyword-expand/{SKILL.md, spec.md}
 │     ├─ source-watchlist-crawl/{SKILL.md, spec.md}
@@ -605,11 +615,11 @@ workspace/
 | 항목 | 내용 |
 |------|------|
 | **Agent 수** | 7개 |
-| **Skill 수** | 14개 워크플로우 Skill |
+| **Skill 수** | 15개 Campus Career Skill (오케스트레이터 1개 + 14개 워크플로우 Skill) |
 | **자동화 포인트** | 3개 (수집, 분석, 일일보고) |
 | **수동 개입 포인트** | 1개 (Notion에서 Accept/Hold/Reject 선택) |
 | **주요 트리거** | Scheduler (08:00), Notion Status (Accept 감지), 자동 연쇄 |
-| **데이터 저장소** | ./.pi/ (정의), ./data/ (런타임) |
+| **데이터 저장소** | ./.claude/ (정의와 runner), ./data/ (런타임) |
 | **에러 처리** | 로깅 + 재시도 + 수동 검토 큐 |
 | **상태 추적** | Notion Status + 내부 workflow 필드 |
 | **확장성** | 각 Agent/Skill 독립적으로 업데이트 가능 |

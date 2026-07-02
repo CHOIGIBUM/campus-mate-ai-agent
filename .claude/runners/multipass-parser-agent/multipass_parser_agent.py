@@ -14,7 +14,7 @@ for skill_name in [
     "poster-vision-extract",
     "schema-merge-and-validate",
 ]:
-    sys.path.insert(0, str(ROOT / ".pi" / "skills" / skill_name))
+    sys.path.insert(0, str(ROOT / ".claude" / "skills" / skill_name))
 
 from html_opportunity_parse import HtmlOpportunityParseSkill  # noqa: E402
 from poster_vision_extract import PosterVisionExtractSkill  # noqa: E402

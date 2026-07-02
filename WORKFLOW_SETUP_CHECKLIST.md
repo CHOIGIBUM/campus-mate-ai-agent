@@ -8,7 +8,7 @@
 - [x] WORKFLOW_QUICK_REFERENCE.md - 빠른 참조 가이드
 - [x] CAMPUS_CAREER_AI_PROJECT_SUMMARY.md - 프로젝트 개요 (2주차 작성)
 
-### 🤖 7개 Agents (각 AGENT.md)
+### 🤖 7개 Agents (각 `.claude/agents/*.md`)
 - [x] profile-agent (프로필 관리)
 - [x] source-collector-agent (공고 수집)
 - [x] multipass-parser-agent (3단계 파싱)
@@ -17,7 +17,7 @@
 - [x] calendar-scheduler-agent (Google Calendar)
 - [x] kakao-report-agent (일일 보고, Cron: 08:00)
 
-### 🛠️ 14개 워크플로우 Skills (각 SKILL.md + spec.md)
+### 🛠️ 15개 Campus Career Skills (오케스트레이터 1개 + 14개 워크플로우 Skill)
 
 **데이터 수집 & 파싱 (7개)**
 - [x] profile-build
@@ -280,7 +280,7 @@
 
 구현 중 의문점:
 - Agent 간 데이터 형식 → `AGENT_SKILL_MAPPING.md` 의 입출력 예시 참고
-- Skill 상세 정의 → `./.pi/skills/*/spec.md` 참고
+- Skill 상세 정의 → `./.claude/skills/*/spec.md` 참고
 - 상태 전이 규칙 → `WORKFLOW_ARCHITECTURE.md`의 상태머신 참고
 - 에러 처리 → `WORKFLOW_QUICK_REFERENCE.md`의 에러 시나리오 참고
 
@@ -318,10 +318,12 @@ MVP 완성으로 인정하는 조건:
 ├─ CAMPUS_CAREER_AI_PROJECT_SUMMARY.md
 │  └─ 프로젝트 개요 (완성: 2주차)
 │
-└─ ./.pi/
+└─ ./.claude/
    ├─ agents/
-   │  └─ [7개 Agent]/AGENT.md
+   │  └─ [7개 Agent].md
+   ├─ runners/
+   │  └─ [7개 Agent runner]/main.py
    └─ skills/
-      └─ [14개 워크플로우 Skill]/SKILL.md + spec.md
+      └─ [오케스트레이터 1개 + 14개 워크플로우 Skill]/SKILL.md + spec.md
 ```
 

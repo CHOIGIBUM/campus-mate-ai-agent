@@ -4,13 +4,13 @@
 
 ### Core Implementation
 ```
-./.pi/agents/profile-agent/
+./.claude/runners/profile-agent/
 ├── profile_agent.py        (11,772자) - Profile Agent 메인 로직 (5단계 온보딩)
 ├── utils.py                (8,892자)  - 유틸리티 함수 (검증, 파일 I/O, 선택지 로드)
 ├── main.py                 (725자)    - 메인 엔트리 포인트
 └── test_profile_agent.py   (9,032자)  - 자동화된 테스트 (4가지 시나리오)
 
-./.pi/skills/profile-build/
+./.claude/skills/profile-build/
 ├── profile_build.py        (6,997자)  - Skill 구현 (JSON 생성 및 저장)
 └── SKILL.md                          - Skill 문서
 
@@ -114,7 +114,7 @@ step_5_confirmation()          # Step 5: 확인 및 저장
 
 ### 테스트 실행
 ```bash
-python3 ./.pi/agents/profile-agent/test_profile_agent.py
+python3 ./.claude/runners/profile-agent/test_profile_agent.py
 ```
 
 ### 테스트 케이스 (✅ 모두 통과)
@@ -149,7 +149,7 @@ python3 ./.pi/agents/profile-agent/test_profile_agent.py
 
 ### 1️⃣ 대화형 온보딩 (사용자 입력)
 ```bash
-python3 ./.pi/agents/profile-agent/main.py
+python3 ./.claude/runners/profile-agent/main.py
 ```
 
 **대화 흐름:**
@@ -189,7 +189,7 @@ agent.run()
 
 ### 3️⃣ 자동화된 테스트
 ```bash
-python3 ./.pi/agents/profile-agent/test_profile_agent.py
+python3 ./.claude/runners/profile-agent/test_profile_agent.py
 ```
 
 ---
@@ -292,7 +292,7 @@ python3 ./.pi/agents/profile-agent/test_profile_agent.py
 ### Phase 2: 실제 사용 (진행)
 ```bash
 # 대화형 실행
-python3 ./.pi/agents/profile-agent/main.py
+python3 ./.claude/runners/profile-agent/main.py
 ```
 
 ### Phase 3: Source Collector 연동 (예정)
@@ -349,10 +349,10 @@ python3 ./.pi/agents/profile-agent/main.py
 
 ```bash
 # 1. 대화형 온보딩
-$ python3 ./.pi/agents/profile-agent/main.py
+$ python3 ./.claude/runners/profile-agent/main.py
 
 # 2. 테스트 실행
-$ python3 ./.pi/agents/profile-agent/test_profile_agent.py
+$ python3 ./.claude/runners/profile-agent/test_profile_agent.py
 
 # 3. 생성된 프로필 확인
 $ cat ./data/profiles/user_profile_user_20260702_001.json

@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, Tuple
 
 ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(ROOT / ".pi" / "skills" / "source-watchlist-crawl"))
+sys.path.insert(0, str(ROOT / ".claude" / "skills" / "source-watchlist-crawl"))
 
 from source_watchlist_crawl import SourceWatchlistCrawlSkill  # noqa: E402
 

@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(ROOT / ".pi" / "skills" / "notion-dashboard-sync"))
+sys.path.insert(0, str(ROOT / ".claude" / "skills" / "notion-dashboard-sync"))
 
 from notion_dashboard_sync import NotionDashboardSyncSkill  # noqa: E402
 

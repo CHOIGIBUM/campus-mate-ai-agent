@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(ROOT / ".pi" / "skills" / "kakao-brief-generate"))
+sys.path.insert(0, str(ROOT / ".claude" / "skills" / "kakao-brief-generate"))
 
 from kakao_brief_generate import KakaoBriefGenerateSkill  # noqa: E402
 

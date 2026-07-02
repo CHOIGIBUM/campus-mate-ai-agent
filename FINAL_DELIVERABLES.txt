@@ -10,8 +10,8 @@ PROFILE AGENT - 최종 산출물 목록
 📁 생성된 파일 구조
 ================================================================================
 
-./.pi/agents/profile-agent/
-├── AGENT.md (기존, 스펙과 일치)
+./.claude/runners/profile-agent/
+├── profile-agent.md (Agent 정의)
 ├── spec.md (✅ 신규 생성, 5,649자)
 ├── profile_agent.py (✅ 신규 생성, 11,772자)
 ├── utils.py (✅ 신규 생성, 8,892자)
@@ -20,7 +20,7 @@ PROFILE AGENT - 최종 산출물 목록
                                  ↓
                             총 30,070자
 
-./.pi/skills/profile-build/
+./.claude/skills/profile-build/
 ├── SKILL.md (기존, 스펙 일치)
 ├── spec.md (✅ 업데이트, 정의 명확화)
 └── profile_build.py (✅ 신규 생성, 6,997자)
@@ -115,11 +115,11 @@ spec.md (skill)           | Doc       | Updated | ✅ UPDATED
 ================================================================================
 
 1️⃣ 대화형 온보딩 (사용자 입력)
-   $ python3 ./.pi/agents/profile-agent/main.py
+   $ python3 ./.claude/runners/profile-agent/main.py
    예상 시간: ~2분
 
 2️⃣ 자동화된 테스트
-   $ python3 ./.pi/agents/profile-agent/test_profile_agent.py
+   $ python3 ./.claude/runners/profile-agent/test_profile_agent.py
    예상 시간: ~5초
 
 3️⃣ 프로그래매틱 사용
@@ -292,10 +292,10 @@ spec.md (skill)           | Doc       | Updated | ✅ UPDATED
 📞 연락처
 ================================================================================
 
-구현 문의: ./.pi/agents/profile-agent/ 참조
-스킬 문의: ./.pi/skills/profile-build/ 참조
+구현 문의: ./.claude/runners/profile-agent/ 참조
+스킬 문의: ./.claude/skills/profile-build/ 참조
 데이터 문의: ./data/choices/ 참조
-테스트 실행: python3 ./.pi/agents/profile-agent/test_profile_agent.py
+테스트 실행: python3 ./.claude/runners/profile-agent/test_profile_agent.py
 
 ================================================================================
 작성일: 2026-07-02

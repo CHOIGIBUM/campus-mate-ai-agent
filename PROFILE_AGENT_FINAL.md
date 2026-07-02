@@ -3,7 +3,7 @@
 ## ✅ 완성된 항목 (5가지)
 
 ### 1️⃣ Profile Agent spec.md 작성 ✓
-- **위치:** `./.pi/agents/profile-agent/spec.md`
+- **위치:** `./.claude/skills/profile-build/spec.md`
 - **내용:**
   - 5단계 온보딩 흐름 상세 정의
   - 필드별 검증 규칙 (필수/권장/선택)
@@ -14,7 +14,7 @@
   - 성공 기준 8개
 
 ### 2️⃣ profile-build Skill spec.md 업데이트 ✓
-- **위치:** `./.pi/skills/profile-build/spec.md`
+- **위치:** `./.claude/skills/profile-build/spec.md`
 - **변경사항:**
   - Profile Agent와의 연동 명확화
   - 입력 데이터 구조 정의
@@ -33,12 +33,12 @@
   ```
 - **특징:** 자유입력 옵션 지원 ([기타] 선택시)
 
-### 4️⃣ Profile Agent AGENT.md (기존) ✓
-- **위치:** `./.pi/agents/profile-agent/AGENT.md`
+### 4️⃣ Profile Agent profile-agent.md ✓
+- **위치:** `./.claude/agents/profile-agent.md`
 - **상태:** 이미 작성됨 (5단계 흐름과 일치)
 
 ### 5️⃣ profile-build Skill SKILL.md (기존) ✓
-- **위치:** `./.pi/skills/profile-build/SKILL.md`
+- **위치:** `./.claude/skills/profile-build/SKILL.md`
 - **상태:** 이미 작성됨
 
 ---
@@ -154,11 +154,11 @@ sequence는 당일 생성된 프로필 순번
 ## 📂 파일 구조 확인
 
 ```
-✓ ./.pi/agents/profile-agent/
-  ├─ AGENT.md (기존)
+✓ ./.claude/runners/profile-agent/
+  ├─ profile-agent.md
   └─ spec.md (✅ 새로 작성)
 
-✓ ./.pi/skills/profile-build/
+✓ ./.claude/skills/profile-build/
   ├─ SKILL.md (기존)
   └─ spec.md (✅ 업데이트됨)
 
