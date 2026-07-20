@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,8 +9,14 @@ description = "Code-backed Claude Code harness for collecting, parsing, recommen
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
-  { name = "LEXUS Team contributors" }
+  { name = "최기범" },
+  { name = "박소은" },
+  { name = "신예진" },
+  { name = "이효경" },
+  { name = "임재성" },
 ]
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
   "beautifulsoup4>=4.12,<5",
   "pydantic>=2.7,<3",

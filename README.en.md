@@ -15,6 +15,7 @@
 ![Skills](https://img.shields.io/badge/Skills-12-147C8A)
 ![Runtime](https://img.shields.io/badge/Automation-Timely-111111)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 ![Result](https://img.shields.io/badge/Result-Finalist%207%20of%2012-C5962A)
 
 <br/>
@@ -306,7 +307,9 @@ campus-mate-ai-agent/
 ├── tests/
 ├── examples/
 ├── scripts/
-└── assets/overview/
+└── assets/
+    ├── overview/
+    └── demo/
 ```
 
 The competition slides and speaking script are not included on GitHub. The README and Harness documents explain the project, while the source code, tests, and demo video show how it works.
@@ -318,14 +321,25 @@ The competition slides and speaking script are not included on GitHub. The READM
 - **Project** — Campus Mate: automated university competition discovery and scheduling Agent
 - **Event** — Harness Engineering: AI Agent & Skill Hackathon
 - **Result** — Finalist, 7 of 12 teams
-- **Role** — Team · Architecture & Development Lead
+- **Team** — LEXUS
+- **Members** — 최기범 · 박소은 · 신예진 · 이효경 · 임재성
+- **Role (Gibum Choi)** — Architecture & Development Lead
 - **Demo** — [YouTube](https://youtu.be/dyarRcuLeIU)
 
 ---
 
-## 🔐 Security and use
+## 🔐 Security
 
-- Live Notion, Slack, and model credentials must be stored only in environment variables or Timely Secrets.
-- Personal profiles, real calendars, runtime data, and execution logs are not included on GitHub.
-- Institutional logos, external-service trademarks, and third-party notice content remain subject to their respective owners and terms.
-- No open-source license is granted at this time. A license may be added after agreement among the team contributors.
+Campus Mate integrates with external services such as Notion, Slack, and Google Calendar while keeping credentials and live user data outside the source code.
+
+- Notion, Slack, and model API keys are injected through `.env` or Timely Secrets; `.env.example` lists variable names only.
+- `.env`, personal profiles, real calendar data, runtime artifacts, and execution logs are excluded through `.gitignore`.
+- `scripts/scan_secrets.py` and CI check the repository for common credential patterns.
+
+---
+
+## 📄 License
+
+The original source code and project-authored documentation created by the LEXUS team are available under the [MIT License](./LICENSE).
+
+The MIT License applies only to code and documentation authored by the team. Third-party trademarks and logos—including those of Notion, Slack, Google Calendar, Timely, and Claude—collected notice content, and other externally sourced materials remain subject to their respective owners and terms.

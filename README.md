@@ -15,6 +15,7 @@
 ![Skills](https://img.shields.io/badge/Skills-12-147C8A)
 ![Runtime](https://img.shields.io/badge/Automation-Timely-111111)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 ![Result](https://img.shields.io/badge/Result-Finalist%207%20of%2012-C5962A)
 
 <br/>
@@ -306,7 +307,9 @@ campus-mate-ai-agent/
 ├── tests/
 ├── examples/
 ├── scripts/
-└── assets/overview/
+└── assets/
+    ├── overview/
+    └── demo/
 ```
 
 발표자료와 발표 대본은 GitHub에 포함하지 않았습니다. 프로젝트 설명은 README와 Harness 문서로, 실제 동작은 코드·테스트·시연 영상으로 확인할 수 있도록 구성했습니다.
@@ -318,14 +321,25 @@ campus-mate-ai-agent/
 - **Project** — Campus Mate: 대학생 공모전 일정 자동 관리 에이전트
 - **Event** — Harness Engineering: AI Agent & Skill Hackathon
 - **Result** — Finalist, 7 of 12 teams
-- **Role** — Team · Architecture & Development Lead
+- **Team** — LEXUS
+- **Members** — 최기범 · 박소은 · 신예진 · 이효경 · 임재성
+- **Role (최기범)** — Architecture & Development Lead
 - **Demo** — [YouTube](https://youtu.be/dyarRcuLeIU)
 
 ---
 
-## 🔐 보안과 이용 범위
+## 🔐 보안
 
-- 실제 Notion·Slack·모델 토큰은 환경변수 또는 Timely Secrets에만 저장합니다.
-- GitHub에는 개인 프로필, 실제 일정, 런타임 데이터와 실행 로그를 포함하지 않습니다.
-- 기관 로고, 외부 서비스 상표와 제3자 공고 내용은 각 권리자의 조건을 따릅니다.
-- 팀 공동 코드에 대한 오픈소스 라이선스는 팀원 간 합의 후 추가합니다. 현재 별도의 라이선스를 부여하지 않습니다.
+Campus Mate는 Notion·Slack·Google Calendar 등 외부 서비스와 연결되지만, 인증정보와 실제 사용자 데이터가 소스 코드에 포함되지 않도록 분리했습니다.
+
+- Notion·Slack·모델 API 키는 `.env` 또는 Timely Secrets에서 주입하며, `.env.example`에는 필요한 변수명만 제공합니다.
+- `.env`, 개인 프로필, 실제 일정, 런타임 산출물과 실행 로그는 `.gitignore`로 제외합니다.
+- `scripts/scan_secrets.py`와 CI에서 일반적인 인증정보 패턴을 검사합니다.
+
+---
+
+## 📄 라이선스
+
+이 프로젝트에서 LEXUS 팀이 작성한 원본 소스 코드와 프로젝트 문서는 [MIT License](./LICENSE)로 공개합니다.
+
+MIT License는 팀이 직접 작성한 코드와 문서에 적용됩니다. Notion·Slack·Google Calendar·Timely·Claude 등 외부 서비스의 상표와 로고, 수집 대상 사이트의 공고 내용, 그 밖의 제3자 자료에는 적용되지 않으며 각 권리자의 이용조건을 따릅니다.
