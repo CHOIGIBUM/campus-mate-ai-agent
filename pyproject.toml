@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools>=77.0.3", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "campus-mate"
 version = "2.1.0"
-description = "Code-backed Claude Code harness for collecting, parsing, recommending, and scheduling university competition notices."
+description = "AI agent harness for collecting, parsing, recommending, and scheduling university competition notices."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
@@ -17,6 +17,18 @@ authors = [
 ]
 license = "MIT"
 license-files = ["LICENSE"]
+keywords = [
+  "ai-agent",
+  "claude-code",
+  "workflow-automation",
+  "notion",
+  "slack",
+  "google-calendar",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+]
 dependencies = [
   "beautifulsoup4>=4.12,<5",
   "pydantic>=2.7,<3",
