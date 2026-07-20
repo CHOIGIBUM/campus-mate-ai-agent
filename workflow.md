@@ -1,64 +1,48 @@
-# Campus Mate — Workflow and Handoff Protocol
+# Campus Mate — Orchestration Workflow
 
 ## 1. Run modes
 
-| Mode | Trigger examples | External writes | Phases |
+| Mode | Typical trigger | External write | Phases |
 |---|---|---:|---|
-| `onboard` | “온보딩 시작”, “프로필 설정” | profile file only | 0–1 |
-| `demo` | “시연 시작”, `/campus-mate-demo` | JSON backend by default | 0–8 |
-| `daily` | 08:00 Timely automation | Notion; conflict updates | 0–6, 8 |
-| `brief` | 09:00 Timely automation | Slack | 0, 6, 8 |
-| `accept-sync` | hourly Timely automation | Calendar and Notion state | 0, 7, 8 |
-| `partial` | “파싱만 다시”, “브리핑만 다시” | phase-specific | affected phase + downstream validation |
-| `recovery` | retry after `NeedsReview`/`CalendarError` | controlled | failed request only |
+| `status` | configuration or repository inspection | no | 0, 8 |
+| `onboard` | new profile or profile update | local profile only | 0, 1, 8 |
+| `demo` | fixture demo or explicitly approved live demo | JSON by default | 0–8 |
+| `daily` | Timely `daily-collector` or manual collection | Notion when configured | 0–5, 8 |
+| `brief` | Timely `slack-briefing` or manual briefing | Slack when approved | 0, 6, 8 |
+| `accept-sync` | Timely hourly schedule or manual approval sync | Calendar and Notion | 0, 7, 8 |
+| `partial:<phase>` | targeted recovery | depends on phase | required phase and downstream |
 
-## 2. Workspace layout
+If external-write intent is unclear, begin with `status` or dry-run.
 
-Every orchestrated run should write an audit trail under a unique directory:
+## 2. Runtime workspace
+
+Each orchestrated run creates:
 
 ```text
-_workspace/runs/<YYYYMMDD-HHMMSS>-<mode>/
+_workspace/runs/<timestamp>-<mode>/
 ├── manifest.json
 ├── 00_input/
-│   ├── request.md
-│   └── profile.snapshot.json
-├── 01_collection/
-│   ├── discovered-urls.json
-│   └── collection-report.json
-├── 02_parsing/
-│   ├── opportunities.json
-│   └── parse-review.md
-├── 03_recommendation/
-│   ├── scored-opportunities.json
-│   └── score-review.md
-├── 04_notion/
-│   └── notion-sync-report.json
-├── 05_briefing/
-│   └── slack-payload.json
-├── 06_calendar/
-│   ├── freebusy.json
-│   ├── calendar-requests.json
-│   └── calendar-results.json
-├── 07_qa/
-│   └── qa-report.md
+├── 01_profile/
+├── 02_collection/
+├── 03_parsing/
+├── 04_recommendation/
+├── 05_notion/
+├── 06_notification/
+├── 07_calendar/
+├── 08_qa/
 └── handoffs/
-    ├── profile-manager.json
-    ├── source-collector.json
-    └── ...
 ```
 
-The Python package may also write to `data/` and `artifacts/`. The workspace stores run-level copies and review notes, not a competing source of truth.
+The runtime directory is intentionally ignored by Git.
 
-## 3. Handoff envelope
-
-Every functional agent returns a JSON-compatible handoff:
+## 3. Handoff contract
 
 ```json
 {
-  "agent": "multipass-parser",
   "status": "PASS",
-  "inputs": ["_workspace/.../discovered-urls.json"],
-  "outputs": ["_workspace/.../opportunities.json"],
+  "agent": "multipass-parser",
+  "inputs": ["02_collection/source-pages.json"],
+  "outputs": ["03_parsing/opportunities.json"],
   "metrics": {"parsed": 8, "needs_review": 1},
   "warnings": ["one notice had conflicting deadlines"],
   "errors": [],
@@ -68,138 +52,108 @@ Every functional agent returns a JSON-compatible handoff:
 
 Allowed `status` values:
 
-- `PASS` — downstream phase may continue
-- `NEEDS_REVIEW` — safe partial output exists; human or targeted rerun required
-- `FAIL` — no safe downstream use
+- `PASS` — downstream may continue.
+- `NEEDS_REVIEW` — safe partial output exists, but targeted review is required.
+- `FAIL` — no safe downstream use.
 
 ## 4. End-to-end phases
 
 ### Phase 0 — Context and safety
 
-1. Determine mode from user request or Timely schedule.
-2. Create a unique run directory and `manifest.json`.
-3. Read `CLAUDE.md`, `spec.md`, and the relevant skill.
-4. Confirm storage backend and external-write intent.
-5. Check that no secret value is being copied into artifacts.
+1. Determine mode from the user request or Timely schedule.
+2. Read `CLAUDE.md`, `spec.md`, and relevant Skills.
+3. Create a run directory and manifest.
+4. Check profile, storage backend, optional OCR/Vision, and credential presence without printing secrets.
+5. Determine whether external write is allowed.
 
-Stop conditions:
-
-- Missing required environment variables for a requested external write
-- Attempt to use an unsupported source as if it were production-ready
-- User asks for destructive Notion replacement
+Stop when required configuration is missing for a requested write, an unsupported source is requested as production-ready, or a destructive Notion refresh is proposed.
 
 ### Phase 1 — Profile
 
-Lead agent: `profile-manager`
+Lead Agent: `profile-manager`
 
-1. Load existing profile if present.
-2. Ask only for missing required fields.
+1. Load the current profile if present.
+2. Ask only for missing or intentionally changed values.
 3. Normalize and validate with `UserProfile`.
-4. Save profile and snapshot it into the run workspace.
-5. Produce a concise confirmation summary.
+4. Save the profile and a run snapshot.
+5. Return search terms and changed fields.
 
-Gate:
-
-- school, grade, major, and at least one interest exist
-- no invented data
+Gate: school, grade, major, and at least one interest exist; no invented values.
 
 ### Phase 2 — Collection
 
-Lead agent: `source-collector`
+Lead Agent: `source-collector`
 
-1. Use the supported source adapter.
-2. Discover up to configured limit.
+1. Confirm a supported source adapter.
+2. Discover up to the configured limit.
 3. Normalize and deduplicate URLs.
-4. Fetch details with timeout and bounded retries.
-5. Record per-item success/failure.
+4. Fetch with timeout and bounded retries.
+5. Record per-item success and failure.
 
-Gate:
-
-- discovery report exists even for zero results
-- no login bypass or terms-violating workaround
+Gate: a collection report exists even when zero notices are found.
 
 ### Phase 3 — Multi-pass parsing
 
-Lead agent: `multipass-parser`
+Lead Agent: `multipass-parser`
 
-1. Extract deterministic data from JSON-LD, Next.js state, and HTML.
-2. Evaluate missing high-value fields.
-3. If enabled/useful, run rendered OCR.
-4. If enabled/useful, run poster vision.
-5. Merge by field with evidence and confidence.
-6. Record conflicts and `NeedsReview` conditions.
+1. Parse JSON-LD, Next.js state, and visible HTML.
+2. Evaluate missing or conflicting high-value fields.
+3. Run rendered OCR only when enabled and useful.
+4. Run poster vision only when enabled and useful.
+5. Merge by field with evidence, confidence, and warnings.
+6. Mark unresolved core conflicts as `NeedsReview`.
 
-Gate:
-
-- every stored opportunity has title, source URL, stable ID
-- no unsupported inference
-- conflicts are explicit
+Gate: every stored item has title, source URL, stable ID, and explicit review state.
 
 ### Phase 4 — Relevance and priority
 
-Lead agent: `fit-priority`
+Lead Agent: `fit-priority`
 
-1. Expand profile and notice keywords conservatively.
-2. Compute scoring breakdown.
+1. Build conservative profile search terms.
+2. Compute score breakdown.
 3. Compute deadline priority.
 4. Generate grounded reasons.
-5. Keep score separate from eligibility certainty and parse confidence.
+5. Preserve uncertainty around eligibility and parsing.
 
-Gate:
+Gate: score is 0–100, breakdown sums to score, and reasons cite observed attributes.
 
-- score in 0–100
-- breakdown sums to score
-- reasons cite observed profile/notice attributes
+### Phase 5 — Notion and conflict status
 
-### Phase 5 — Notion and conflicts
+Lead Agent: `notion-dashboard`
 
-Lead agent: `notion-dashboard`
+1. Ensure required schema without deletion.
+2. Upsert by stable ID or source URL.
+3. Preserve manual states, notes, and calendar IDs.
+4. If normalized free/busy input exists, apply conflict status.
+5. Record page IDs and sync errors.
 
-1. Ensure schema without deletion.
-2. Upsert by stable ID/URL.
-3. Preserve manual states and notes.
-4. If free/busy input exists, apply conflict status.
-5. Record Notion page IDs and sync errors.
+Gate: repeat runs keep the same page and preserve user state.
 
-Gate:
+### Phase 6 — Slack briefing
 
-- repeat run does not create duplicate page
-- user state is preserved
+Lead Agent: `schedule-notification`
 
-### Phase 6 — Briefing
+1. Query `Recommended` items.
+2. Sort by priority, score, and deadline.
+3. Create the Slack payload.
+4. Default to dry-run in an interactive session unless delivery is explicitly requested.
+5. Timely scheduled mode may deliver to the configured channel.
 
-Lead agent: `schedule-notification`
-Operational wrapper: `slack-briefing`
-
-1. Query recommended items.
-2. Sort by urgency, score, deadline.
-3. Generate Slack Block Kit payload.
-4. Default to dry-run in an interactive Claude Code session unless the user explicitly requests delivery.
-5. In scheduled Timely mode, deliver to configured channel.
-
-Gate:
-
-- destination channel ID is configured for delivery
-- payload contains no tokens or private profile fields
+Gate: no token or private profile field appears in the payload.
 
 ### Phase 7 — Accept and calendar
 
-Lead agent: `schedule-notification`
-Operational wrapper: `accept-sync`
+Lead Agent: `schedule-notification`
 
 1. Query only `Accept` items.
-2. Plan deadline/preparation/event requests.
-3. Assign request and idempotency IDs.
+2. Plan deadline, preparation, and event requests.
+3. Attach stable request and idempotency IDs.
 4. Timely/Composio creates events.
-5. Apply result file per request.
-6. Store event IDs and transition successful opportunities.
-7. Keep failed items recoverable.
+5. Apply results per request ID.
+6. Preserve successful event IDs and retry only failures.
+7. Transition to `Scheduled` only after confirmed success.
 
-Gate:
-
-- no event for non-Accept items
-- no `Scheduled` without confirmed result
-- repeat run skips already-created event kinds
+Gate: no event request for a non-Accept item and no unconfirmed `Scheduled` state.
 
 ### Phase 8 — QA and report
 
@@ -207,41 +161,60 @@ Skill: `qa-audit`
 
 1. Verify phase artifacts and handoffs.
 2. Check state transitions and duplicate prevention.
-3. Run tests, harness validator, and secret scan when code changed.
-4. Write `07_qa/qa-report.md`.
-5. Summarize completed actions, skipped optional passes, warnings, and follow-up.
+3. Run tests, harness validator, compile, lint, and secret scan when code changed.
+4. Summarize actions, skipped optional passes, warnings, and follow-up.
 
-## 5. Partial reruns
+## 5. Timely schedule composition
 
-- Profile changed → rerun recommendation, Notion, briefing; do not recollect unless requested.
-- Parser improved → rerun parsing for affected URLs, then recommendation and Notion.
-- Score rule changed → rerun recommendation onward.
-- Slack formatting changed → rerun briefing only.
-- Calendar failure → rerun failed requests only.
-- A user changes `Hold`/`Reject` → do not create calendar events; no other phase required.
+```text
+08:00 daily-collector
+  source-collector
+  → multipass-parser
+  → fit-priority
+  → notion-dashboard
+  → optional schedule-notification conflict update
 
-## 6. Recovery rules
+09:00 slack-briefing
+  schedule-notification
+
+hourly accept-sync
+  notion-dashboard read
+  → schedule-notification calendar plan/apply
+```
+
+The schedule names are deployment units, not additional `.claude/agents`.
+
+## 6. Partial reruns
+
+- Profile changed → recommendation, Notion, and briefing; no recollection unless requested.
+- Parser improved → affected URLs only, then recommendation and Notion.
+- Ranking rule changed → recommendation onward.
+- Slack format changed → briefing only.
+- Calendar failure → failed requests only.
+- User changes to `Hold` or `Reject` → no calendar event; no earlier phase required.
+
+## 7. Recovery rules
 
 | Failure | Recovery |
 |---|---|
-| One source URL fails | Continue other URLs; report item failure |
-| OCR unavailable | Record skipped pass; use HTML/vision evidence |
-| Vision unavailable | Record skipped pass; never fabricate missing fields |
+| One source URL fails | Continue other URLs and record item failure |
+| OCR unavailable | Record skipped pass and keep HTML/vision evidence |
+| Vision unavailable | Record skipped pass and never fabricate fields |
 | Conflicting deadline | `NeedsReview`; block automatic scheduling |
-| Notion rate limit | bounded retry, then sync error without deleting data |
-| Slack delivery fails | keep dry-run artifact and delivery error |
-| One calendar request fails | preserve successful IDs; retry failed request only |
-| Secret detected | block write/commit; rotate if exposure occurred |
+| Notion rate limit | Bounded retry, then sync error without deletion |
+| Slack delivery failure | Preserve dry-run payload and error |
+| One calendar request fails | Preserve successful IDs and retry failed request only |
+| Secret detected | Block write/commit and rotate exposed credential |
 
-## 7. Final run summary
+## 8. Final run summary
 
 The orchestrator reports:
 
 - run ID and mode
-- profile status
+- agents invoked
 - discovered, parsed, recommended, review, and failure counts
-- Notion upsert counts
-- Slack dry-run/delivery result
+- Notion create/update/preserve counts
+- Slack dry-run or delivery result
 - calendar request/success/failure counts
 - QA status
-- exact artifact paths
+- exact artifact paths and warnings

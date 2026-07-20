@@ -1,25 +1,46 @@
-# Reference manifest; field names may need adaptation to the Timely UI/API.
+# Reference manifest. Adapt connector field names to the Timely workspace.
 timezone: Asia/Seoul
+
 automations:
   - name: daily-collector
     schedule: "0 8 * * *"
-    harness_agent: daily-collector
+    harness_skill: campus-mate-orchestrator
+    mode: daily
+    functional_agents:
+      - source-collector
+      - multipass-parser
+      - fit-priority
+      - notion-dashboard
+      - schedule-notification
     command: >-
       campus-mate collect --source linkareer --limit 8
       --report artifacts/daily-collection.json
-    follow_up: "Fetch Google Calendar free/busy and run conflicts apply when available."
+    optional_follow_up:
+      connector: GOOGLECALENDAR_FREE_BUSY_QUERY
+      apply_command: >-
+        campus-mate conflicts apply
+        --input artifacts/freebusy.json
 
   - name: slack-briefing
     schedule: "0 9 * * *"
-    harness_agent: slack-briefing
+    harness_skill: campus-mate-orchestrator
+    mode: brief
+    functional_agents:
+      - schedule-notification
     command: "campus-mate brief"
 
   - name: accept-sync
     schedule: "0 * * * *"
-    harness_agent: accept-sync
+    harness_skill: campus-mate-orchestrator
+    mode: accept-sync
+    functional_agents:
+      - notion-dashboard
+      - schedule-notification
     plan_command: >-
-      campus-mate calendar plan --output artifacts/calendar-requests.json
+      campus-mate calendar plan
+      --output artifacts/calendar-requests.json
     connector: GOOGLECALENDAR_CREATE_EVENT
+    result_contract: examples/integrations/calendar_results.example.json
     apply_command: >-
       campus-mate calendar apply
       --requests artifacts/calendar-requests.json

@@ -2,20 +2,26 @@
 
 <img src="./assets/overview/campus-mate.png" width="100%" alt="Campus Mate multi-agent workflow overview" />
 
-# Campus Mate Harness
+# Campus Mate
 
-**여러 사이트에 흩어진 대학생 공모전 정보를 구조화하고,<br/>개인화 추천부터 Notion 승인·Slack 브리핑·Google Calendar 반영까지 연결하는 code-backed Claude Code Harness**
+**대학생 공모전 정보를 수집·구조화하고,<br/>개인화 추천부터 Notion 승인·Slack 브리핑·Google Calendar 반영까지 연결하는 code-backed AI Agent Harness**
 
 <p>
   <strong>한국어</strong> · <a href="./README.en.md">English</a>
 </p>
 
 ![Harness](https://img.shields.io/badge/Harness-Claude%20Code-6D5CE7)
-![Agents](https://img.shields.io/badge/Agents-6%20Functional%20%2B%203%20Operational-0C4F5A)
-![Skills](https://img.shields.io/badge/Skills-18-147C8A)
+![Agents](https://img.shields.io/badge/Agents-6-0C4F5A)
+![Skills](https://img.shields.io/badge/Skills-12-147C8A)
 ![Runtime](https://img.shields.io/badge/Automation-Timely-111111)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB)
 ![Result](https://img.shields.io/badge/Result-Finalist%207%20of%2012-C5962A)
+
+<br/>
+
+<a href="https://youtu.be/dyarRcuLeIU">
+  <img src="https://img.shields.io/badge/DEMO-시연%20영상%20보기-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Campus Mate 시연 영상 보기" />
+</a>
 
 </div>
 
@@ -23,102 +29,106 @@
 
 ## 🎯 해결하려는 문제
 
-대학생 공모전과 대외활동 정보는 커리어 커뮤니티, 학교 게시판, 포털 등 여러 경로에 흩어져 있습니다. 사용자는 매번 직접 검색하고, 모집 자격과 제출물, 마감일을 읽어 정리한 뒤 일정을 다시 캘린더에 옮겨야 합니다.
+대학생 공모전과 대외활동 정보는 커리어 커뮤니티, 학교 게시판, 포털 등 여러 경로에 흩어져 있습니다. 사용자는 매번 직접 검색하고, 모집 자격·제출물·마감일을 읽어 정리한 뒤 다시 캘린더에 옮겨야 합니다.
 
-Campus Mate는 이 반복 과정을 **수집 → 구조화 → 추천 → 승인 → 일정화**의 하나의 흐름으로 연결합니다. 공고를 자동으로 추천하더라도 참가 결정은 사용자가 Notion에서 `Accept`로 명시해야 하며, 승인된 항목만 Google Calendar에 반영합니다.
+Campus Mate는 이 반복 과정을 **수집 → 구조화 → 추천 → 승인 → 일정화**의 하나의 워크플로로 연결합니다. 추천 결과는 Notion 현황판에 모으고, 사용자가 `Accept`로 승인한 공고만 Google Calendar에 반영합니다. Slack은 추천 내용을 전달하는 브리핑 채널로 사용합니다.
 
-프로젝트 발표에서도 Timely Orchestrator가 Python Script와 LLM을 이용해 공고 수집, 3단계 파싱, 적합도 계산, 현황판 동기화, 충돌 검사와 승인 반영을 수행하고, Notion·Calendar·브리핑으로 결과를 연결하는 구조로 설계했습니다.
+대회 당시에는 Timely에서 Python 스크립트와 LLM, 외부 커넥터를 조합해 실제 흐름을 시연했습니다. 현재 저장소는 그 구현을 정리하고, Agent·Skill 계약과 테스트 가능한 Python 실행 계층을 보완한 공개용 버전입니다.
 
 ---
 
-## 🧩 Harness 구조
+## 🎬 시연
 
-이 저장소는 단순한 Python 애플리케이션도, 실행 코드가 없는 프롬프트 모음도 아닙니다.
+Timely에서 파이프라인을 시작한 뒤 공고 수집, 구조화, 적합도 계산, Notion 저장, Slack 브리핑과 Google Calendar 반영으로 이어지는 흐름을 확인할 수 있습니다.
+
+<p align="center">
+  <a href="https://youtu.be/dyarRcuLeIU">
+    <img
+      src="https://img.youtube.com/vi/dyarRcuLeIU/hqdefault.jpg"
+      width="82%"
+      alt="Campus Mate end-to-end demo"
+    />
+  </a>
+</p>
+
+<p align="center">
+  <sub>이미지를 클릭하면 YouTube 시연 영상으로 이동합니다.</sub>
+</p>
+
+---
+
+## 🧩 구조: Harness + 실행 코드
+
+이 저장소는 프롬프트 문서만 모아둔 하네스도, 정책 없이 코드만 실행하는 애플리케이션도 아닙니다.
 
 ```text
-Claude Code Harness
-├── .claude/agents/       역할·권한·입출력·검증·handoff
-├── .claude/skills/       단계별 방법론과 실행 절차
-├── CLAUDE.md             프로젝트 불변식과 코드 규칙
+Harness layer
+├── .claude/agents/       6개 역할 Agent의 책임·입출력·handoff
+├── .claude/skills/       12개 단계별 방법론·검증 계약
+├── CLAUDE.md             프로젝트 불변식과 실행 원칙
 ├── spec.md               기능·비기능 요구사항
-├── workflow.md           phase와 복구 흐름
-└── role-table.md         Agent ↔ Skill ↔ Code ↔ Output 매핑
+├── workflow.md           phase, 재실행, 복구 규칙
+└── role-table.md         Agent ↔ Skill ↔ Python ↔ 산출물 매핑
 
-Python execution layer
-├── src/campus_mate/      수집·파싱·추천·연동 로직
-├── tests/                자동 검증
-└── timely/               스케줄·connector 배포 매핑
+Execution layer
+├── src/campus_mate/      수집·파싱·추천·Notion·Slack·Calendar 로직
+├── tests/                단위·계약 테스트
+├── timely/               반복 실행 스케줄과 connector 매핑
+└── examples/             외부 연결 없는 재현용 fixture
 ```
 
-`.claude/`는 Claude Code가 프로젝트 수준의 subagent와 skill을 자동 발견하는 공식 경로입니다. 초기 제출본의 `.pi/` 정의는 개념과 역할을 보존하되, 최종본에서는 Claude Code reference와 동일한 `.claude/` 구조로 통합했습니다.
+Agent는 **무엇을, 어떤 조건에서, 어디까지 수행할지**를 결정합니다. Python 코드는 수집·파싱·점수 계산·API 연동처럼 재현 가능한 작업을 수행합니다.
 
 ---
 
-## 🤖 에이전트 팀
+## 🤖 6개 기능 Agent
 
-### 6개 기능 Agent
-
-| Agent | 역할 | 주요 산출물 |
+| Agent | 책임 | 핵심 산출물 |
 |---|---|---|
-| `profile-manager` | 학교·학년·전공·관심 분야 온보딩 | `user_profile.json` |
+| `profile-manager` | 학교·학년·전공·관심 분야 온보딩 | 검증된 `UserProfile` |
 | `source-collector` | 지원 사이트 신규 URL 수집·중복 제거 | collection report |
 | `multipass-parser` | HTML → OCR → Poster Vision, 근거 병합 | structured opportunities |
-| `fit-priority` | 적합도·우선순위·추천 이유 | recommendation fields |
-| `notion-dashboard` | 비파괴 upsert, 사용자 상태 보존 | Notion pages/state |
-| `schedule-notification` | 충돌·Slack·Accept→Calendar | briefing/calendar artifacts |
+| `fit-priority` | 적합도·우선순위·추천 이유 계산 | recommendation fields |
+| `notion-dashboard` | 비파괴 upsert와 사용자 상태 보존 | Notion page/state |
+| `schedule-notification` | 충돌 확인·Slack·Accept→Calendar | briefing/calendar artifacts |
 
-### 3개 운영 Agent
+### Timely 반복 실행 단위
 
-| Agent | Timely 주기 | 조합되는 기능 |
+Timely의 세 자동화는 별도 전문 Agent가 아니라, 위 6개 역할을 일정에 맞게 조합하는 **운영 스케줄**입니다.
+
+| 자동화 | 주기 | 실행 범위 |
 |---|---:|---|
-| `daily-collector` | 매일 08:00 | 수집·파싱·추천·Notion·충돌 |
-| `slack-briefing` | 매일 09:00 | 추천 브리핑 |
-| `accept-sync` | 매시 정각 | Accept 감지·Calendar·Scheduled |
-
-발표자료의 6-Agent 구조와 실제 운영의 3개 스케줄 Agent는 서로 다른 수준입니다. 전자는 **업무 책임**, 후자는 **배포·실행 단위**입니다.
+| `daily-collector` | 매일 08:00 | 수집 → 파싱 → 추천 → Notion → 충돌 확인 |
+| `slack-briefing` | 매일 09:00 | 추천 공고 Slack 브리핑 |
+| `accept-sync` | 매시 정각 | Notion `Accept` → Calendar → `Scheduled` |
 
 ---
 
-## 🛠️ 18개 Skill
-
-메인 진입점은 `/campus-mate-orchestrator`입니다. 나머지 Skill은 파싱, 점수, 동기화와 QA 계약을 담당합니다.
+## 🛠️ 12개 Skill
 
 ```text
 orchestration
 ├── campus-mate-orchestrator
-├── campus-mate-onboarding
-├── campus-mate-demo
 └── qa-audit
 
-collection / parsing
-├── source-watchlist-crawl
+profile / collection
+├── profile-build
+└── source-watchlist-crawl
+
+multi-pass parsing
 ├── html-opportunity-parse
 ├── rendered-page-ocr
 ├── poster-vision-extract
 └── schema-merge-and-validate
 
-recommendation
-├── profile-build
-├── interest-keyword-expand
-├── fit-score-rank
-└── deadline-priority-rank
-
-integration
+recommendation / integration
+├── recommendation-rank
 ├── notion-dashboard-sync
-├── calendar-freebusy-check
-├── calendar-event-create
-├── accept-state-sync
-└── slack-brief-generate
+├── slack-brief-generate
+└── calendar-sync
 ```
 
-각 Agent와 Skill은 단순 설명이 아니라 다음을 명시합니다.
-
-- 호출 조건과 담당하지 않는 범위
-- 입력·출력 경로와 데이터 계약
-- 품질 게이트와 금지 동작
-- 다음 Agent handoff
-- 실패·부분 성공·재시도 정책
-- 실제 Python 모듈과 테스트 파일
+각 Skill은 호출 조건, 입력·출력 계약, 품질 게이트, 금지 동작, 실패 처리와 실제 Python 명령을 명시합니다. 세부 역할은 [`role-table.md`](./role-table.md)에서 확인할 수 있습니다.
 
 ---
 
@@ -126,7 +136,7 @@ integration
 
 ```mermaid
 flowchart LR
-    P[프로필] --> C[공고 수집]
+    P[사용자 프로필] --> C[공고 수집]
     C --> H[HTML / JSON-LD / Next.js]
     H --> Q{핵심 필드 충분?}
     Q -- 아니오 --> O[Rendered OCR]
@@ -143,7 +153,7 @@ flowchart LR
     GC --> ST[Scheduled]
 ```
 
-핵심 상태는 다음과 같습니다.
+상태 전이는 다음 원칙을 따릅니다.
 
 ```text
 New → Recommended → Accept → Scheduling → Scheduled
@@ -154,26 +164,31 @@ New → Recommended → Accept → Scheduling → Scheduled
 캘린더 실패: CalendarError → retry
 ```
 
----
-
-## 🧠 Code-backed Harness
-
-Agent가 코드를 대신하는 구조가 아니라, Agent가 **코드를 언제 어떤 조건으로 실행하고 결과를 어떻게 검증할지**를 정의합니다.
-
-| Harness contract | Execution code |
-|---|---|
-| HTML evidence 우선, 충돌 시 review | `parsing/html.py`, `parsing/merge.py` |
-| 0–100 설명 가능한 적합도 | `services/recommendation.py` |
-| Notion 전체 삭제 금지, 상태 보존 | `integrations/notion.py` |
-| Accept만 calendar 요청 | `integrations/calendar_bridge.py` |
-| 부분 실패 시 성공 event ID 보존 | `workflows/accept_sync.py` |
-| dry-run Slack 검수 | `workflows/brief.py` |
+- routine 수집은 `Accept`, `Hold`, `Reject`, `Scheduled`를 덮어쓰지 않습니다.
+- Slack 메시지는 승인 수단이 아닙니다.
+- Calendar 요청은 `Accept` 상태에서만 생성합니다.
+- 일부 일정 생성에 실패하면 성공한 event ID는 보존하고 실패한 요청만 재시도합니다.
 
 ---
 
-## 🚀 사용 방법
+## 🔍 멀티패스 파싱
 
-### 1. 설치
+파싱은 모든 단계를 무조건 호출하지 않습니다.
+
+1. JSON-LD, Next.js 상태, visible HTML에서 결정적 정보를 먼저 추출합니다.
+2. 제목·마감일·자격·제출물 등 핵심 필드의 누락 여부를 확인합니다.
+3. 필요한 경우에만 렌더링 OCR을 실행합니다.
+4. 포스터에만 남아 있는 정보가 있을 때 Vision pass를 실행합니다.
+5. 필드별 `evidence`, `confidence`, `warning`을 유지하며 병합합니다.
+6. 해결되지 않은 날짜·자격 충돌은 `NeedsReview`로 표시하고 자동 일정화를 막습니다.
+
+현재 완전 지원 수집 소스는 **Linkareer**입니다. OCR과 Poster Vision은 필요한 런타임 및 모델 설정이 있을 때 사용하는 선택 기능입니다.
+
+---
+
+## 🚀 설치와 실행
+
+### 1. 환경 구성
 
 ```bash
 python -m venv .venv
@@ -183,25 +198,20 @@ python -m playwright install chromium
 cp .env.example .env
 ```
 
-### 2. Claude Code Harness 실행
+실제 인증정보는 `.env` 또는 Timely Secrets에만 저장합니다.
 
-프로젝트 루트에서 Claude Code를 실행하면 `.claude/agents/`와 `.claude/skills/`가 자동 발견됩니다.
+### 2. 외부 연결 없는 fixture 데모
 
-```text
-“Campus Mate 온보딩 시작”
-“fixture로 Campus Mate 시연 시작”
-“오늘 공고 수집하고 Notion에 반영해줘”
-“Slack 브리핑 dry-run 해줘”
-“Notion Accept 항목 승인 반영해줘”
-“파싱 단계만 다시 실행해줘”
-```
+```bash
+mkdir -p data artifacts
+cp examples/profile.example.json data/user_profile.json
 
-또는 직접:
+CAMPUS_MATE_STORAGE_BACKEND=json \
+  campus-mate demo \
+  --fixture examples/fixtures/linkareer_detail.html \
+  --output artifacts/demo-result.json
 
-```text
-/campus-mate-orchestrator demo
-/campus-mate-onboarding
-/campus-mate-demo fixture
+campus-mate list
 ```
 
 ### 3. Python CLI
@@ -211,23 +221,47 @@ campus-mate profile init
 campus-mate collect --source linkareer --limit 8
 campus-mate brief --dry-run --output artifacts/slack-briefing.json
 campus-mate calendar plan --output artifacts/calendar-requests.json
+campus-mate calendar apply \
+  --requests artifacts/calendar-requests.json \
+  --results artifacts/calendar-results.json
 ```
 
-자세한 단계와 Timely 배포는 [`workflow.md`](./workflow.md)와 [`docs/timely-deployment.md`](./docs/timely-deployment.md)를 참고합니다.
+### 4. Claude Code Harness
+
+프로젝트 루트에서 Claude Code를 실행하면 `.claude/agents/`와 `.claude/skills/`를 사용할 수 있습니다.
+
+```text
+/campus-mate-orchestrator status
+/campus-mate-orchestrator onboard
+/campus-mate-orchestrator demo
+/campus-mate-orchestrator daily
+/campus-mate-orchestrator brief
+/campus-mate-orchestrator accept-sync
+```
+
+자연어 요청도 같은 계약을 따릅니다.
+
+```text
+Campus Mate 온보딩을 시작해줘.
+fixture로 전체 흐름을 시연해줘.
+오늘 공고를 수집하고 Notion 반영 전 결과를 검토해줘.
+Slack 브리핑을 dry-run으로 만들어줘.
+Notion에서 Accept한 공고만 일정에 반영해줘.
+```
 
 ---
 
-## 🧪 외부 연결 없는 재현 데모
+## ⏱️ Timely 연결
 
-```bash
-cp examples/profile.example.json data/user_profile.json
-CAMPUS_MATE_STORAGE_BACKEND=json \
-  campus-mate demo --fixture examples/fixtures/linkareer_detail.html
+[`timely/automations.yaml`](./timely/automations.yaml)은 세 반복 작업의 기준 명령과 connector handoff를 정리합니다.
 
-campus-mate list
+```text
+08:00 daily-collector
+09:00 slack-briefing
+매시 정각 accept-sync
 ```
 
-fixture 데모는 파싱·추천·idempotent JSON 저장을 확인하는 개발 검증용입니다. 실제 운영 구조는 Timely + Notion + Slack + Google Calendar입니다.
+Google Calendar 생성은 Python이 idempotent request manifest를 만든 뒤 Timely/Composio가 이벤트를 생성하고, 결과 파일을 Python이 다시 적용하는 방식입니다. 이 분리로 외부 connector 실패를 항목별로 기록하고 재시도할 수 있습니다.
 
 ---
 
@@ -237,18 +271,18 @@ fixture 데모는 파싱·추천·idempotent JSON 저장을 확인하는 개발 
 python -m pytest -q
 python scripts/validate_harness.py
 python scripts/scan_secrets.py .
-python -m compileall -q src scripts
+python -m compileall -q src scripts .claude/hooks
+ruff check src tests scripts .claude/hooks
 ```
 
-최종 패키지에서는 다음을 검증합니다.
+검증 범위:
 
-- 9개 Agent와 18개 Skill의 frontmatter 및 상호 참조
-- `.pi/` 제거와 `.claude/` canonical structure
-- HTML/OCR/multipass merge
-- 적합도 scoring
-- Notion 상태 보존 upsert
-- Slack payload
-- Calendar idempotency와 부분 실패 복구
+- 6개 Agent와 12개 Skill의 frontmatter·상호 참조
+- HTML/OCR/Vision 병합과 근거 추적
+- 설명 가능한 적합도 점수
+- Notion 비파괴 upsert와 상태 보존
+- Slack payload 생성
+- Calendar idempotency·부분 실패 복구
 - 비밀정보 패턴 부재
 
 ---
@@ -256,62 +290,42 @@ python -m compileall -q src scripts
 ## 📁 저장소 구조
 
 ```text
-campus-mate-harness/
+campus-mate-ai-agent/
 ├── .claude/
-│   ├── agents/                 # 9개 Agent
-│   ├── skills/                 # 18개 Skill + references/templates
-│   ├── hooks/                  # secret guard / audit hooks
+│   ├── agents/                 # 6개 기능 Agent
+│   ├── skills/                 # 12개 Skill
+│   ├── hooks/                  # secret guard / audit hook
 │   └── settings.json
+├── .github/workflows/ci.yml
 ├── CLAUDE.md
 ├── spec.md
 ├── workflow.md
 ├── role-table.md
-├── docs/
 ├── timely/
 ├── src/campus_mate/
 ├── tests/
 ├── examples/
-├── materials/
-└── _workspace/
+├── scripts/
+└── assets/overview/
 ```
 
----
-
-## 📌 현재 지원 범위
-
-- 완전 지원 source: Linkareer
-- OCR: Playwright/Tesseract 선택 기능
-- Poster Vision: compatible vision endpoint 설정 시 선택 기능
-- Notion: 현황판·승인 상태·포스터·추천 정보
-- Slack: 일일 one-way briefing
-- Calendar: Timely/Composio manifest bridge
-
-미구현 사이트나 설정되지 않은 Vision 기능을 실제 운영 기능으로 과장하지 않습니다. 상세 제한은 [`docs/known-limitations.md`](./docs/known-limitations.md)에 정리했습니다.
+발표자료와 발표 대본은 저장소에서 제외했습니다. 프로젝트 설명과 실제 동작 증명은 README, 코드, Harness 계약과 시연 영상으로 구성합니다.
 
 ---
 
-## 📎 프로젝트 자료
-
-| 자료 | 링크 | 내용 |
-|---|---|---|
-| 발표자료 | [2026 Campus Mate 발표자료](./materials/2026-campus-mate-presentation.pptx) | 문제 정의, 시스템 구조, 6개 기능 역할과 자동화 흐름 |
-| 발표 대본 | [7분 발표 대본](./materials/2026-campus-mate-7min-script.docx) | Timely 시연과 Notion·Slack·Calendar 연결 설명 |
-
----
-
-## 👥 프로젝트
+## 👥 프로젝트 정보
 
 - **Project** — Campus Mate: 대학생 공모전 일정 자동 관리 에이전트
 - **Event** — Harness Engineering: AI Agent & Skill Hackathon
 - **Result** — Finalist, 7 of 12 teams
 - **Role** — Team · Architecture & Development Lead
-
-원 발표자료는 Timely를 중심으로 사용자 프로필, 3단계 파싱, Notion 현황판, Google Calendar, Slack 브리핑을 연결하고, 프로필 관리·공고 수집·멀티패스 파싱·맞춤 추천·현황판 동기화·일정/알림 관리의 여섯 역할을 제시했습니다.
+- **Demo** — [YouTube](https://youtu.be/dyarRcuLeIU)
 
 ---
 
-## 🔐 보안과 라이선스
+## 🔐 보안과 이용 범위
 
-실제 토큰은 환경변수 또는 Timely Secrets에만 저장합니다. `.claude` hook과 CI secret scan이 흔한 credential 패턴의 기록을 차단·검사합니다.
-
-팀 공동 코드의 공개 라이선스는 팀원 간 합의 후 추가하는 것을 권장합니다. 현재 패키지는 별도의 오픈소스 라이선스를 부여하지 않습니다.
+- 실제 Notion·Slack·모델 토큰은 환경변수 또는 Timely Secrets에만 저장합니다.
+- 공개 저장소에는 개인 프로필, 실제 일정, 런타임 데이터와 실행 로그를 포함하지 않습니다.
+- 기관 로고, 외부 서비스 상표와 제3자 공고 내용은 각 권리자의 조건을 따릅니다.
+- 팀 공동 코드에 대한 오픈소스 라이선스는 팀원 간 합의 후 추가합니다. 현재 별도의 라이선스를 부여하지 않습니다.

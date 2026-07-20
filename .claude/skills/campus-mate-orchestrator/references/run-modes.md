@@ -1,12 +1,13 @@
-# Run Mode Decision Table
+# Orchestrator run modes
 
-| User phrase | Mode | Default write policy |
+| Mode | Purpose | Default side effect |
 |---|---|---|
-| 온보딩 시작 / 프로필 설정 | onboard | local profile only |
-| 시연 시작 / demo | demo | JSON backend unless “실제 연동” explicit |
-| 오늘 공고 수집 / 일일 파이프라인 | daily | confirm Notion write in interactive sessions |
-| 브리핑 만들어 | brief | dry-run |
-| 브리핑 보내 | brief | Slack write after config check |
-| 승인 반영 | accept-sync | Calendar write requires result connector |
-| 상태 확인 / 뭐가 준비됐어 | status | read-only |
-| 파싱만 다시 | partial:parse | no unrelated phases |
+| `status` | Inspect configuration, contracts, and recent artifacts | none |
+| `onboard` | Create or update the profile through `profile-manager` | local profile write |
+| `demo` | Run fixture by default; live only with explicit approval | JSON by default |
+| `daily` | Collect, parse, rank, and upsert | Notion when configured |
+| `brief` | Generate or send the recommendation briefing | dry-run interactively |
+| `accept-sync` | Plan and apply accepted calendar items | Calendar and Notion |
+| `partial:<phase>` | Targeted rerun and required downstream phases | phase dependent |
+
+Timely schedules `daily`, `brief`, and `accept-sync`. These schedule names do not require separate Agent definitions.

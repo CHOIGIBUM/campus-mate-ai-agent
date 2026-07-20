@@ -8,18 +8,17 @@ credentials*.json
 client_secret*.json
 .claude/settings.local.json
 
-# Harness runtime workspace
-_workspace/*
-!_workspace/.gitkeep
-!_workspace/README.md
+# Runtime data and Harness audit output
+_workspace/
+artifacts/
+data/
 
-# Runtime data
-artifacts/*
-!artifacts/.gitkeep
-data/*
-!data/.gitkeep
-!data/README.md
-!examples/**
+# Internal presentation and working documents
+materials/
+*.pptx
+*.docx
+*.hwp
+*.hwpx
 
 # Python
 __pycache__/

@@ -5,13 +5,39 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+EXPECTED_AGENTS = {
+    "profile-manager",
+    "source-collector",
+    "multipass-parser",
+    "fit-priority",
+    "notion-dashboard",
+    "schedule-notification",
+}
+
+EXPECTED_SKILLS = {
+    "campus-mate-orchestrator",
+    "profile-build",
+    "source-watchlist-crawl",
+    "html-opportunity-parse",
+    "rendered-page-ocr",
+    "poster-vision-extract",
+    "schema-merge-and-validate",
+    "recommendation-rank",
+    "notion-dashboard-sync",
+    "slack-brief-generate",
+    "calendar-sync",
+    "qa-audit",
+}
+
 
 def test_claude_harness_structure() -> None:
     assert not (ROOT / ".pi").exists()
-    assert (ROOT / ".claude" / "agents").is_dir()
-    assert (ROOT / ".claude" / "skills" / "campus-mate-orchestrator" / "SKILL.md").exists()
-    assert len(list((ROOT / ".claude" / "agents").glob("*.md"))) == 9
-    assert len(list((ROOT / ".claude" / "skills").glob("*/SKILL.md"))) >= 18
+    agent_dir = ROOT / ".claude" / "agents"
+    skill_dir = ROOT / ".claude" / "skills"
+    assert agent_dir.is_dir()
+    assert skill_dir.is_dir()
+    assert {path.stem for path in agent_dir.glob("*.md")} == EXPECTED_AGENTS
+    assert {path.parent.name for path in skill_dir.glob("*/SKILL.md")} == EXPECTED_SKILLS
 
 
 def test_settings_json_is_valid() -> None:
