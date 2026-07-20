@@ -114,7 +114,7 @@ New → Recommended → Accept → Scheduling → Scheduled
 | `timely/automations.yaml` | 정기 실행 주기와 외부 커넥터 handoff |
 | `tests/` | 파싱, 추천, 상태 보존과 일정 동기화 검증 |
 
-세부 지침은 [`CLAUDE.md`](./CLAUDE.md), [`spec.md`](./spec.md), [`workflow.md`](./workflow.md), [`role-table.md`](./role-table.md)에 정리되어 있습니다.
+세부 계약은 [`CLAUDE.md`](./CLAUDE.md), [`spec.md`](./spec.md), [`workflow.md`](./workflow.md), [`role-table.md`](./role-table.md)에 정리되어 있습니다.
 
 ### 6개 기능 Agent
 

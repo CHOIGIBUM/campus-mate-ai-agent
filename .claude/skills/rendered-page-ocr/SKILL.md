@@ -1,7 +1,7 @@
 ---
 name: rendered-page-ocr
 description: >-
-  HTML에서 빠진 텍스트를 보완하기 위해 Playwright 렌더링 화면 또는 포스터 이미지를 OCR하고, OCR 근거와 낮음·중간 수준의 신뢰도 후보를 반환한다.
+  HTML에서 확인되지 않은 필드를 렌더링 화면 또는 포스터 OCR로 추출한다.
 user-invocable: false
 allowed-tools:
   - Read
@@ -16,30 +16,28 @@ allowed-tools:
 
 # 렌더링 페이지 OCR
 
-## 사용하는 경우
+## 실행 조건
 
-- 결정적인 HTML 출처에 날짜·참가 자격·제출물 정보가 없을 때
-- 중요한 내용이 이미지 또는 렌더링된 카드 안에만 있을 때
-
-## 준비 사항
-
-- 선택 의존성 `ocr`
-- 페이지 렌더링이 필요하면 Playwright Chromium
-- Tesseract `kor+eng` 언어팩
+- 핵심 필드가 HTML 결과에 없음
+- 정보가 렌더링 카드 또는 이미지에 존재
+- OCR 의존성과 `kor+eng` 언어팩 사용 가능
 
 ## 규칙
 
-- OCR 결과는 보조 근거이며 자동으로 정답으로 간주하지 않습니다.
-- 인식한 원문 발췌를 그대로 보존합니다.
-- 모호한 숫자는 경고로 남깁니다.
-- 실행할 수 없으면 결과를 만들지 말고 `skipped`로 기록합니다.
+- OCR 결과를 보조 근거로 사용합니다.
+- 인식 원문을 그대로 저장합니다.
+- 숫자·날짜 모호성은 `warnings`에 기록합니다.
+- 실행 조건을 만족하지 않으면 상태를 `SKIPPED`로 반환합니다.
 
-## 구현
+## 출력
 
-`src/campus_mate/parsing/ocr.py`
+- `ParseCandidate`
+- OCR 원문
+- 필드별 신뢰도
+- warnings
+- 상태: `PASS`, `SKIPPED`, `FAIL`
 
-## 검증
+## 구현·검증
 
-```bash
-python -m pytest tests/test_ocr_parser.py -q
-```
+- `src/campus_mate/parsing/ocr.py`
+- `python -m pytest tests/test_ocr_parser.py -q`
