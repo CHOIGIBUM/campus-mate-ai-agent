@@ -1,32 +1,47 @@
 ---
 name: profile-build
-description: 사용자의 온보딩 입력값(이름, 학교, 학과, 학년, 관심 분야, 희망 직무, 선호 활동, 지역, 가능 시간)을 JSON 구조로 정규화하고 저장하는 스킬
+description: >-
+  사용자 프로필 입력을 UserProfile 계약에 맞게 정규화·검증하고 저장한다. profile-manager가 사용하는 도메인 스킬이다.
+user-invocable: false
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - Write
+  - Edit
+  - Agent
+  - Skill
 ---
 
-# Profile Build Skill
+# Profile Build Contract
 
-사용자 프로필 정보를 구조화하고 JSON으로 저장합니다.
+## Input
 
-## 사용 시기
+JSON object or dialogue-derived values.
 
-Profile Agent가 사용자 온보딩 정보를 입력받은 직후
+## Required
 
-## 입력
+- school
+- grade
+- major
+- interests (one or more)
 
-- 이름, 학교, 학과, 학년
-- 관심 분야(배열), 희망 직무(배열)
-- 선호 활동 유형, 활동 가능 지역
-- 주간 투자 가능 시간
-- Kakao 보고 시간
+## Normalization
 
-## 출력
+- comma-separated strings → arrays
+- trim whitespace
+- case-insensitive duplicate removal
+- keep user wording; do not hallucinate official department names
 
-- `user_profile_{user_id}.json` 파일
-- basic_info, interests, career_goal, preferences, availability, metadata 섹션 포함
-- 타임스탬프, 버전 정보 기록
+## Validation
 
-## 주의사항
+Use `UserProfile` in `src/campus_mate/models.py` or:
 
-- 입력되지 않은 필드는 기록하지 않습니다
-- 학년, 지역 등은 표준 분류를 사용합니다
-- 같은 사용자는 같은 user_id를 유지합니다
+```bash
+campus-mate profile import --file <file>
+```
+
+## Output
+
+Validated `data/user_profile.json` and summary. On failure, list the exact missing or invalid field.

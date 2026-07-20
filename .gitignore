@@ -1,28 +1,45 @@
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+client_secret*.json
+.claude/settings.local.json
+
+# Harness runtime workspace
+_workspace/*
+!_workspace/.gitkeep
+!_workspace/README.md
+
+# Runtime data
+artifacts/*
+!artifacts/.gitkeep
+data/*
+!data/.gitkeep
+!data/README.md
+!examples/**
+
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-env/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
 venv/
-*.egg-info/
 dist/
 build/
+*.egg-info/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Browser / OCR
+playwright-report/
+test-results/
 
-# OS
+# OS / editor
 .DS_Store
-.AppleDouble
-.LSOverride
 Thumbs.db
-
-# Project specific
-*.log
-.env
-.env.local
+.idea/
+.vscode/

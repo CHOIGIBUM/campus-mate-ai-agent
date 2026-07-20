@@ -1,10 +1,45 @@
 ---
 name: rendered-page-ocr
-description: Campus Career AI의 rendered-page-ocr 스킬
+description: >-
+  HTML에서 빠진 텍스트를 보완하기 위해 Playwright 렌더링 또는 포스터 이미지를 OCR하고, OCR evidence와 낮은/중간 confidence 후보를 반환한다.
+user-invocable: false
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - Write
+  - Edit
+  - Agent
+  - Skill
 ---
 
-# rendered-page-ocr Skill
+# Rendered Page OCR
 
-이 스킬은 Campus Career AI의 rendered-page-ocr 작업을 담당합니다.
+## Use when
 
-spec.md 파일을 참조하여 자세한 목표, 범위, 입출력을 확인하세요.
+- date/eligibility/submission fields are absent from deterministic HTML sources
+- important content is embedded in an image or rendered card
+
+## Prerequisites
+
+- optional `ocr` dependencies
+- Playwright Chromium when page rendering is needed
+- Tesseract `kor+eng` language packs
+
+## Rules
+
+- OCR is supporting evidence, not automatic ground truth.
+- Preserve the exact excerpt.
+- Ambiguous digits remain warnings.
+- If unavailable, record `skipped` rather than fabricating output.
+
+## Implementation
+
+`src/campus_mate/parsing/ocr.py`
+
+## Verify
+
+```bash
+python -m pytest tests/test_ocr_parser.py -q
+```

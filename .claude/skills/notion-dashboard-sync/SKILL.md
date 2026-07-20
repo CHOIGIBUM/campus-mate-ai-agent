@@ -1,10 +1,49 @@
 ---
 name: notion-dashboard-sync
-description: Campus Career AI의 notion-dashboard-sync 스킬
+description: >-
+  Notion data source schema를 확인하고 stable ID/URL 기반 비파괴 upsert를 수행하며 사용자 상태·메모·calendar event IDs를 보존한다.
+user-invocable: false
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - Write
+  - Edit
+  - Agent
+  - Skill
 ---
 
-# notion-dashboard-sync Skill
+# Notion Dashboard Sync
 
-이 스킬은 Campus Career AI의 notion-dashboard-sync 작업을 담당합니다.
+Read [notion-schema.md](references/notion-schema.md).
 
-spec.md 파일을 참조하여 자세한 목표, 범위, 입출력을 확인하세요.
+## Preflight
+
+- Notion credentials exist
+- integration has access to the data source
+- storage backend is notion
+
+## Schema
+
+```bash
+campus-mate --storage notion notion ensure-schema
+```
+
+## Upsert rules
+
+- match by stable ID or source URL
+- create new, update safe automated fields
+- preserve Accept/Hold/Reject/Scheduling/Scheduled
+- preserve manual notes and event IDs
+- never mass archive/delete
+
+## Failure handling
+
+Rate limit/API failure → bounded retry, then sync error. Do not remove local artifacts.
+
+## Verify
+
+```bash
+python -m pytest tests/test_notion_repository.py -q
+```

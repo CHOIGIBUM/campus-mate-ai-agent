@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "results": [
+    {
+      "request_id": "replace-with-request-id",
+      "success": true,
+      "event_id": "google-calendar-event-id",
+      "raw": {}
+    }
+  ]
+}

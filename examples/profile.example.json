@@ -1,0 +1,12 @@
+{
+  "name": "홍길동",
+  "school": "강원대학교",
+  "grade": "3학년",
+  "major": "AI융합학과",
+  "interests": ["인공지능", "데이터", "디지털 헬스케어"],
+  "activity_types": ["공모전", "해커톤"],
+  "career_goal": "AI 엔지니어",
+  "keywords": ["Python", "LLM", "헬스케어", "멀티에이전트"],
+  "preferred_regions": ["강원", "서울", "온라인"],
+  "available_times": ["평일 저녁", "주말"]
+}

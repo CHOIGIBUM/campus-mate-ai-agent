@@ -1,10 +1,52 @@
 ---
 name: calendar-event-create
-description: Campus Career AI의 calendar-event-create 스킬
+description: >-
+  Notion Accept 항목에서 idempotent Google Calendar request manifest를 만들고 Timely/Composio result를 request_id별로 적용한다.
+user-invocable: false
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - Write
+  - Edit
+  - Agent
+  - Skill
 ---
 
-# calendar-event-create Skill
+# Calendar Event Create
 
-이 스킬은 Campus Career AI의 calendar-event-create 작업을 담당합니다.
+Read [calendar-contract.md](references/calendar-contract.md).
 
-spec.md 파일을 참조하여 자세한 목표, 범위, 입출력을 확인하세요.
+## Plan
+
+```bash
+campus-mate calendar plan --output artifacts/calendar-requests.json
+```
+
+## Connector
+
+Timely creates each request and returns `request_id`, success, event_id, and error.
+
+## Apply
+
+```bash
+campus-mate calendar apply \
+  --requests artifacts/calendar-requests.json \
+  --results artifacts/calendar-results.json
+```
+
+## Invariants
+
+- Accept only
+- existing event kind skipped
+- stable idempotency key
+- result matched by request_id
+- partial success preserved
+- Scheduled only after confirmed success
+
+## Verify
+
+```bash
+python -m pytest tests/test_calendar_bridge.py -q
+```

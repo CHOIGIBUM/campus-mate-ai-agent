@@ -1,10 +1,41 @@
 ---
 name: fit-score-rank
-description: Campus Career AI의 fit-score-rank 스킬
+description: >-
+  프로필과 공고를 비교해 0–100 적합도 breakdown과 grounded recommendation reasons를 계산한다. 상세 배점과 설명 규칙을 제공한다.
+user-invocable: false
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - Write
+  - Edit
+  - Agent
+  - Skill
 ---
 
-# fit-score-rank Skill
+# Fit Score Rank
 
-이 스킬은 Campus Career AI의 fit-score-rank 작업을 담당합니다.
+Read [scoring-rubric.md](references/scoring-rubric.md).
 
-spec.md 파일을 참조하여 자세한 목표, 범위, 입출력을 확인하세요.
+## Procedure
+
+1. Build profile search terms.
+2. Compare major/interests/career/activity/eligibility/region.
+3. Calculate each category.
+4. Clamp total to 0–100.
+5. Generate 2–4 reasons using matched observed terms.
+6. Keep uncertainty explicit.
+
+## Invariants
+
+- breakdown sum equals score
+- score is not success probability
+- parse confidence is separate
+- unknown eligibility is not treated as eligible
+
+## Verify
+
+```bash
+python -m pytest tests/test_recommendation.py -q
+```

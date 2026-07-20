@@ -1,0 +1,10 @@
+{
+  "agent": "agent-name",
+  "status": "PASS",
+  "inputs": [],
+  "outputs": [],
+  "metrics": {},
+  "warnings": [],
+  "errors": [],
+  "next": "next-agent-or-stop"
+}

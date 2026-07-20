@@ -1,10 +1,37 @@
 ---
 name: accept-state-sync
-description: Campus Career AI의 accept-state-sync 스킬
+description: >-
+  Opportunity 상태 전이 규칙을 검증하고 Notion 사용자 선택을 보존하며 Calendar 결과에 따라 Scheduling/Scheduled/CalendarError를 적용한다.
+user-invocable: false
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - Write
+  - Edit
+  - Agent
+  - Skill
 ---
 
-# accept-state-sync Skill
+# Accept State Sync
 
-이 스킬은 Campus Career AI의 accept-state-sync 작업을 담당합니다.
+## Allowed transitions
 
-spec.md 파일을 참조하여 자세한 목표, 범위, 입출력을 확인하세요.
+```text
+Recommended → Accept | Hold | Reject
+Accept → Scheduling → Scheduled
+Accept/Scheduling → CalendarError
+CalendarError → Scheduling → Scheduled
+```
+
+Routine collection must not move user states backward.
+
+## Rules
+
+- Slack message is not approval.
+- Missing calendar result cannot produce Scheduled.
+- Preserve successful event IDs during retry.
+- A rejected/held item must not be planned.
+
+Implementation is shared between Notion repository and calendar result applier.

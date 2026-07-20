@@ -1,0 +1,26 @@
+# Reference manifest; field names may need adaptation to the Timely UI/API.
+timezone: Asia/Seoul
+automations:
+  - name: daily-collector
+    schedule: "0 8 * * *"
+    harness_agent: daily-collector
+    command: >-
+      campus-mate collect --source linkareer --limit 8
+      --report artifacts/daily-collection.json
+    follow_up: "Fetch Google Calendar free/busy and run conflicts apply when available."
+
+  - name: slack-briefing
+    schedule: "0 9 * * *"
+    harness_agent: slack-briefing
+    command: "campus-mate brief"
+
+  - name: accept-sync
+    schedule: "0 * * * *"
+    harness_agent: accept-sync
+    plan_command: >-
+      campus-mate calendar plan --output artifacts/calendar-requests.json
+    connector: GOOGLECALENDAR_CREATE_EVENT
+    apply_command: >-
+      campus-mate calendar apply
+      --requests artifacts/calendar-requests.json
+      --results artifacts/calendar-results.json
