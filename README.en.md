@@ -4,7 +4,7 @@
 
 # Campus Mate
 
-**A code-backed AI agent harness that collects and structures university competition notices,<br/>ranks them for a student profile, and connects Notion approval, Slack briefings, and Google Calendar scheduling.**
+**An AI Agent Harness that collects and structures university competition notices,<br/>then connects personalized recommendations to Notion approval, Slack briefings, and Google Calendar scheduling.**
 
 <p>
   <a href="./README.md">한국어</a> · <strong>English</strong>
@@ -27,85 +27,112 @@
 
 ---
 
-## Problem
+## 🎯 The problem
 
-University competition and extracurricular notices are scattered across career communities, school boards, and portal sites. Students repeatedly search, read eligibility and submission requirements, extract dates, and manually recreate the same information in a calendar.
+University competition and extracurricular notices are scattered across career communities, school boards, and portal sites. Students repeatedly search for opportunities, read eligibility and submission requirements, extract deadlines, and then recreate the same information in a calendar.
 
-Campus Mate connects that work into one flow: **collect → structure → recommend → approve → schedule**. Recommendations are stored in a Notion dashboard. Slack delivers a one-way briefing, while Google Calendar receives only opportunities explicitly marked `Accept` by the user.
+Campus Mate connects that work into one flow: **collect → structure → recommend → approve → schedule**. Recommendations are gathered in a Notion dashboard, and only opportunities explicitly marked `Accept` by the user are added to Google Calendar. Slack is used as the briefing channel for recommended opportunities.
 
-The original competition demo ran the workflow in Timely with Python scripts, an LLM, and external connectors. This repository is a public, consolidated version with explicit Agent/Skill contracts, tested Python modules, and safer state and credential handling.
+For the competition demo, we connected Python scripts, an LLM, and the Notion, Slack, and Google Calendar connectors through Timely to demonstrate the complete flow from notice collection to calendar scheduling. Afterward, we clarified the responsibilities of each Agent and Skill, reorganized the implementation, and added tests so the project could be shared in a more complete and reviewable form.
 
 ---
 
-## Demo
+## 🎬 Demo
 
-The video shows the end-to-end Timely flow from collection and parsing to relevance scoring, Notion storage, Slack briefing, and calendar synchronization.
+The video shows the Timely workflow from notice collection and structuring to relevance scoring, Notion storage, Slack briefing, and Google Calendar scheduling.
 
 <p align="center">
   <a href="https://youtu.be/dyarRcuLeIU">
-    <img src="https://img.youtube.com/vi/dyarRcuLeIU/hqdefault.jpg" width="82%" alt="Campus Mate end-to-end demo" />
+    <img
+      src="./assets/demo/campus-mate-demo-thumbnail.png"
+      width="82%"
+      alt="Campus Mate end-to-end demo"
+    />
   </a>
+</p>
+
+<p align="center">
+  <sub>Click the image to watch the demo on YouTube.</sub>
 </p>
 
 ---
 
-## Harness and execution layers
+## 🧩 Agents, Skills, and execution code
+
+Campus Mate uses Agents and Skills to define the order of work and the checks required at each stage. Python handles the repeatable execution tasks: collection, parsing, ranking, persistence, and external-service integrations.
 
 ```text
 Harness layer
-├── .claude/agents/       responsibilities, I/O contracts, handoffs
-├── .claude/skills/       methods, gates, recovery rules
-├── CLAUDE.md             project invariants
+├── .claude/agents/       responsibilities, I/O contracts, and handoffs for 6 role Agents
+├── .claude/skills/       methods and validation contracts for 12 Skills
+├── CLAUDE.md             project invariants and operating principles
 ├── spec.md               functional and non-functional requirements
-├── workflow.md           phases, partial reruns, recovery
-└── role-table.md         Agent ↔ Skill ↔ Python ↔ output mapping
+├── workflow.md           phases, partial reruns, and recovery rules
+└── role-table.md         Agent ↔ Skill ↔ Python ↔ artifact mapping
 
 Execution layer
-├── src/campus_mate/      collection, parsing, ranking, integrations
+├── src/campus_mate/      collection, parsing, ranking, Notion, Slack, and Calendar logic
 ├── tests/                unit and contract tests
-├── timely/               schedules and connector handoffs
-└── examples/             deterministic local fixtures
+├── timely/               schedules and connector mappings
+└── examples/             deterministic fixtures that run without external accounts
 ```
 
-The harness decides **what may run, under which conditions, and what must be verified before handoff**. Python performs deterministic parsing, ranking, persistence, and integration work.
+Agents decide what must be checked before a result moves to the next stage. Python performs tasks that need to be reproducible, such as parsing, scoring, and API operations.
 
 ---
 
-## Six functional agents
+## 🤖 Six functional Agents
 
 | Agent | Responsibility | Main output |
 |---|---|---|
-| `profile-manager` | Validate the student profile | `UserProfile` |
-| `source-collector` | Discover and deduplicate supported notice URLs | collection report |
-| `multipass-parser` | HTML → OCR → poster vision with evidence merge | structured opportunities |
-| `fit-priority` | Explainable relevance and urgency ranking | recommendation fields |
-| `notion-dashboard` | Non-destructive upsert and state preservation | Notion pages/state |
-| `schedule-notification` | Conflicts, Slack, and Accept→Calendar | briefing/calendar artifacts |
+| `profile-manager` | Onboard school, year, major, and interests | validated `UserProfile` |
+| `source-collector` | Discover new URLs from supported sites and remove duplicates | collection report |
+| `multipass-parser` | HTML → OCR → Poster Vision with evidence merging | structured opportunities |
+| `fit-priority` | Calculate relevance, priority, and recommendation reasons | recommendation fields |
+| `notion-dashboard` | Perform non-destructive upserts while preserving user decisions | Notion page/state |
+| `schedule-notification` | Check conflicts and connect Slack and Accept→Calendar actions | briefing/calendar artifacts |
 
-Timely defines three **scheduled operations**, not three additional domain agents:
+### Timely automations
 
-- `daily-collector` — daily at 08:00
-- `slack-briefing` — daily at 09:00
-- `accept-sync` — hourly
+Timely combines the six roles above into three recurring operations.
+
+| Automation | Schedule | Scope |
+|---|---:|---|
+| `daily-collector` | Daily at 08:00 | collect → parse → recommend → Notion → conflict check |
+| `slack-briefing` | Daily at 09:00 | send recommended opportunities to Slack |
+| `accept-sync` | Hourly | Notion `Accept` → Calendar → `Scheduled` |
 
 ---
 
-## Twelve skills
+## 🛠️ Twelve Skills
 
 ```text
-campus-mate-orchestrator     qa-audit
-profile-build                source-watchlist-crawl
-html-opportunity-parse       rendered-page-ocr
-poster-vision-extract        schema-merge-and-validate
-recommendation-rank          notion-dashboard-sync
-slack-brief-generate         calendar-sync
+orchestration
+├── campus-mate-orchestrator
+└── qa-audit
+
+profile / collection
+├── profile-build
+└── source-watchlist-crawl
+
+multi-pass parsing
+├── html-opportunity-parse
+├── rendered-page-ocr
+├── poster-vision-extract
+└── schema-merge-and-validate
+
+recommendation / integration
+├── recommendation-rank
+├── notion-dashboard-sync
+├── slack-brief-generate
+└── calendar-sync
 ```
 
-Each Skill documents trigger conditions, input/output contracts, quality gates, forbidden behavior, recovery, and executable Python commands.
+Each Skill documents its trigger conditions, inputs and outputs, validation gates, failure handling, and executable Python command. See [`role-table.md`](./role-table.md) for the detailed mapping.
 
 ---
 
-## Workflow
+## 🔄 End-to-end workflow
 
 ```mermaid
 flowchart LR
@@ -126,18 +153,42 @@ flowchart LR
     GC --> ST[Scheduled]
 ```
 
+Notion manages each opportunity through the following statuses.
+
 ```text
 New → Recommended → Accept → Scheduling → Scheduled
                      ├→ Hold
                      └→ Reject
 
-Parser ambiguity: NeedsReview
+Parsing review required: NeedsReview
 Calendar failure: CalendarError → retry
 ```
 
+- Scheduled collection runs do not overwrite `Accept`, `Hold`, `Reject`, or `Scheduled` decisions.
+- Slack delivers recommendations; the participation decision is made in Notion.
+- Google Calendar events are created only for opportunities marked `Accept`.
+- If only some calendar events fail, successful event IDs are preserved and only failed items are retried.
+
 ---
 
-## Installation
+## 🔍 Multi-pass parsing
+
+The parser does not call every pass for every notice.
+
+1. Extract decisive fields from JSON-LD, Next.js state, and visible HTML first.
+2. Check whether core fields such as title, deadline, eligibility, and submissions are complete.
+3. Run rendered OCR only when necessary.
+4. Run Poster Vision when important information remains only in the poster image.
+5. Merge results while preserving field-level `evidence`, `confidence`, and `warning` values.
+6. Mark unresolved date or eligibility conflicts as `NeedsReview` and block automatic scheduling.
+
+The fully supported collection source is currently **Linkareer**. OCR and Poster Vision are optional capabilities that require the corresponding runtime and model configuration.
+
+---
+
+## 🚀 Installation and execution
+
+### 1. Set up the environment
 
 ```bash
 python -m venv .venv
@@ -147,7 +198,9 @@ python -m playwright install chromium
 cp .env.example .env
 ```
 
-### Deterministic fixture demo
+Store live credentials only in `.env` or Timely Secrets.
+
+### 2. Run the fixture demo without external accounts
 
 ```bash
 mkdir -p data artifacts
@@ -161,7 +214,7 @@ CAMPUS_MATE_STORAGE_BACKEND=json \
 campus-mate list
 ```
 
-### CLI
+### 3. Python CLI
 
 ```bash
 campus-mate profile init
@@ -173,7 +226,9 @@ campus-mate calendar apply \
   --results artifacts/calendar-results.json
 ```
 
-### Claude Code
+### 4. Claude Code Harness
+
+Run Claude Code from the project root to use the definitions in `.claude/agents/` and `.claude/skills/`.
 
 ```text
 /campus-mate-orchestrator status
@@ -184,22 +239,33 @@ campus-mate calendar apply \
 /campus-mate-orchestrator accept-sync
 ```
 
----
+Natural-language requests follow the same contracts.
 
-## Current scope
-
-- Fully supported collection adapter: **Linkareer**
-- Optional OCR: Playwright and Tesseract
-- Optional poster vision: configured compatible vision endpoint
-- Notion: dashboard, status, poster, structured fields, recommendation metadata
-- Slack: one-way briefing
-- Calendar: idempotent Timely/Composio request-result bridge
-
-Optional or unconfigured functions are not presented as active production capabilities.
+```text
+Start the Campus Mate onboarding flow.
+Run the full workflow with the fixture.
+Collect today's notices and review the results before writing to Notion.
+Generate the Slack briefing in dry-run mode.
+Schedule only opportunities marked Accept in Notion.
+```
 
 ---
 
-## Verification
+## ⏱️ Timely integration
+
+[`timely/automations.yaml`](./timely/automations.yaml) defines the reference commands and connector handoffs for the three recurring operations.
+
+```text
+08:00 daily-collector
+09:00 slack-briefing
+Hourly accept-sync
+```
+
+Python creates calendar requests with duplicate-prevention metadata. Timely/Composio creates the actual Google Calendar events, then returns the result to Python so the corresponding Notion status can be updated. Success and failure are recorded per event, allowing only failed items to be retried.
+
+---
+
+## ✅ Verification
 
 ```bash
 python -m pytest -q
@@ -209,23 +275,57 @@ python -m compileall -q src scripts .claude/hooks
 ruff check src tests scripts .claude/hooks
 ```
 
-The checks cover the six Agent and twelve Skill contracts, multipass parsing, explainable ranking, non-destructive Notion upsert, Slack payloads, calendar idempotency and partial-failure recovery, and secret patterns.
+The checks cover:
+
+- frontmatter and cross-references for 6 Agents and 12 Skills
+- HTML/OCR/Vision merging and evidence tracking
+- explainable relevance scoring
+- non-destructive Notion upserts and state preservation
+- Slack payload generation
+- Calendar idempotency and partial-failure recovery
+- absence of credential patterns
 
 ---
 
-## Project
+## 📁 Project structure
 
+```text
+campus-mate-ai-agent/
+├── .claude/
+│   ├── agents/                 # 6 functional Agents
+│   ├── skills/                 # 12 Skills
+│   ├── hooks/                  # secret guard / audit hooks
+│   └── settings.json
+├── .github/workflows/ci.yml
+├── CLAUDE.md
+├── spec.md
+├── workflow.md
+├── role-table.md
+├── timely/
+├── src/campus_mate/
+├── tests/
+├── examples/
+├── scripts/
+└── assets/overview/
+```
+
+The competition slides and speaking script are not included on GitHub. The README and Harness documents explain the project, while the source code, tests, and demo video show how it works.
+
+---
+
+## 👥 Project information
+
+- **Project** — Campus Mate: automated university competition discovery and scheduling Agent
 - **Event** — Harness Engineering: AI Agent & Skill Hackathon
 - **Result** — Finalist, 7 of 12 teams
 - **Role** — Team · Architecture & Development Lead
 - **Demo** — [YouTube](https://youtu.be/dyarRcuLeIU)
 
-Presentation files and the internal speaking script are intentionally excluded from this repository. The README, harness contracts, source code, tests, and demo video form the public project record.
-
 ---
 
-## Security and use
+## 🔐 Security and use
 
-Runtime profiles, personal schedules, tokens, logs, and external-service data are excluded from Git. Secrets must be stored in environment variables or Timely Secrets.
-
-No open-source license is granted at this time. A license may be added after agreement among the team contributors. Third-party trademarks, notices, and service content remain subject to their respective owners and terms.
+- Live Notion, Slack, and model credentials must be stored only in environment variables or Timely Secrets.
+- Personal profiles, real calendars, runtime data, and execution logs are not included on GitHub.
+- Institutional logos, external-service trademarks, and third-party notice content remain subject to their respective owners and terms.
+- No open-source license is granted at this time. A license may be added after agreement among the team contributors.
