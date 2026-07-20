@@ -1,127 +1,128 @@
-# Campus Mate — System Specification
+# Campus Mate — 시스템 명세
 
-## 1. Purpose
+## 1. 목적
 
-Campus Mate reduces the repeated work required to find and manage university competitions. It collects notices, structures key fields, compares them with a student profile, stores recommendations in Notion, sends a Slack briefing, and creates Google Calendar events only after explicit user approval.
+Campus Mate는 대학생이 여러 사이트에서 공모전 정보를 찾고 일정을 관리하는 반복 작업을 줄이기 위한 프로젝트입니다. 공고를 수집해 핵심 정보를 구조화하고, 사용자 프로필과 비교해 추천 결과를 Notion에 저장합니다. 추천 공고는 Slack으로 안내하며, 사용자가 직접 승인한 항목만 Google Calendar 일정으로 연결합니다.
 
-## 2. Product boundary
+## 2. 지원 범위
 
-### Included
+### 포함되는 기능
 
-- Student profile onboarding and validation
-- Linkareer notice discovery and detail retrieval
-- HTML, JSON-LD, and Next.js-state parsing
-- Optional rendered OCR and poster vision passes
-- Evidence-aware field merge and conflict detection
-- Explainable relevance scoring and deadline priority
-- Non-destructive Notion upsert and state preservation
-- Slack recommendation briefing
-- Google Calendar free/busy input and event request/result bridge
-- Timely daily and hourly automation mapping
-- Deterministic JSON-backed fixture demo and automated tests
+- 사용자 프로필 온보딩과 검증
+- Linkareer 공고 목록 탐색과 상세 페이지 조회
+- HTML, JSON-LD, Next.js 상태 데이터 파싱
+- 선택적 렌더링 OCR 및 포스터 Vision 파싱
+- 필드별 근거를 유지하는 병합과 충돌 감지
+- 설명 가능한 적합도 점수와 마감 우선순위 계산
+- 기존 데이터를 보존하는 Notion upsert와 상태 유지
+- Slack 추천 브리핑
+- Google Calendar free/busy 입력과 일정 요청·결과 연결
+- Timely의 일별·시간별 자동화 매핑
+- JSON 저장소 기반 fixture 시연과 자동 테스트
 
-### Not claimed as complete
+### 완성 기능으로 주장하지 않는 범위
 
-- Full production support for every Korean competition site
-- Autonomous application submission
-- Automatic participation decisions without user approval
-- Guaranteed OCR or vision without the required runtime and credentials
-- Direct Google Calendar creation inside the Python package; production event creation is bridged through Timely/Composio
-- Prediction that a user will win or be accepted
+- 국내 모든 공모전 사이트에 대한 운영 수준 지원
+- 지원서 자동 제출
+- 사용자 승인 없이 이루어지는 참가 결정
+- 필요한 실행 환경이나 인증정보가 없는 상태에서의 OCR·Vision 보장
+- Python 패키지 내부에서 직접 Google Calendar를 생성하는 기능
+  - 운영 환경의 일정 생성은 Timely/Composio 커넥터를 통해 수행합니다.
+- 수상 또는 선발 가능성 예측
 
-## 3. Actors and systems
+## 3. 사용자와 시스템 역할
 
-| Actor or system | Responsibility |
+| 사용자·시스템 | 역할 |
 |---|---|
-| Student | Provides profile, reviews recommendations, selects `Accept`, `Hold`, or `Reject` in Notion |
-| Claude Code main thread | Runs the orchestrator and delegates bounded tasks to six agents |
-| Functional agents | Apply domain contracts and verify phase outputs |
-| Timely | Executes schedules, Python commands, and connector operations |
-| Notion | Operational dashboard and approval source of truth |
-| Slack | One-way recommendation briefing |
-| Google Calendar | Approved deadline, preparation, and event schedules |
+| 사용자 | 프로필 입력, 추천 검토, Notion에서 `Accept`·`Hold`·`Reject` 선택 |
+| Claude Code 메인 대화 | Orchestrator 실행, 여섯 Agent에 범위가 정해진 작업 위임 |
+| 기능 Agent | 담당 계약 적용, 단계별 출력 검증 |
+| Timely | 자동화 일정, Python 명령, 외부 커넥터 실행 |
+| Notion | 공고 현황판이자 사용자 승인 기준 |
+| Slack | 단방향 추천 브리핑 |
+| Google Calendar | 승인된 공고의 마감·준비·행사 일정 관리 |
 
-## 4. Functional requirements
+## 4. 기능 요구사항
 
-### Profile
+### 프로필
 
-- **FR-P01** Collect school, grade, major, and at least one interest.
-- **FR-P02** Never fill missing required fields with invented defaults.
-- **FR-P03** Normalize comma-separated lists and remove duplicates.
-- **FR-P04** Persist a validated `UserProfile` JSON document.
-- **FR-P05** Avoid collecting unnecessary sensitive personal data.
+- **FR-P01** 학교, 학년, 전공, 관심 분야 1개 이상을 수집합니다.
+- **FR-P02** 누락된 필수값을 임의 기본값으로 채우지 않습니다.
+- **FR-P03** 쉼표로 입력된 목록을 정규화하고 중복을 제거합니다.
+- **FR-P04** 검증된 `UserProfile` JSON 문서를 저장합니다.
+- **FR-P05** 추천에 필요하지 않은 민감정보는 수집하지 않습니다.
 
-### Collection
+### 공고 수집
 
-- **FR-C01** Discover up to the configured limit from a supported source.
-- **FR-C02** Normalize URLs and derive a stable opportunity identifier.
-- **FR-C03** Isolate one failed notice from the rest of the run.
-- **FR-C04** Record discovered, parsed, stored, review, and failure counts.
-- **FR-C05** Never present an unimplemented source adapter as production support.
+- **FR-C01** 지원되는 소스에서 설정된 최대 개수만큼 공고를 찾습니다.
+- **FR-C02** URL을 정규화하고 안정적인 공고 식별자를 생성합니다.
+- **FR-C03** 한 공고의 실패가 전체 실행을 중단하지 않도록 격리합니다.
+- **FR-C04** 발견, 파싱, 저장, 검토 필요, 실패 건수를 기록합니다.
+- **FR-C05** 구현되지 않은 수집 어댑터를 운영 지원 기능으로 표시하지 않습니다.
 
-### Multi-pass parsing
+### 멀티패스 파싱
 
-- **FR-M01** Parse deterministic sources first: JSON-LD, Next.js data, and visible HTML.
-- **FR-M02** Run OCR or vision only when enabled and useful, unless an explicit all-pass test is requested.
-- **FR-M03** Record evidence source, excerpt, and confidence per field.
-- **FR-M04** Mark contradictory or insufficient core fields for review.
-- **FR-M05** Never infer an unsupported date or eligibility criterion.
-- **FR-M06** Block automatic scheduling when a core date conflict remains unresolved.
+- **FR-M01** JSON-LD, Next.js 데이터, 화면에 표시된 HTML처럼 결정적인 출처를 먼저 파싱합니다.
+- **FR-M02** 명시적인 전체 pass 테스트가 아니라면 OCR·Vision은 활성화되어 있고 실제로 도움이 될 때만 실행합니다.
+- **FR-M03** 각 필드의 근거 출처, 원문 발췌, 신뢰도를 기록합니다.
+- **FR-M04** 핵심 정보가 충돌하거나 부족하면 검토 대상으로 표시합니다.
+- **FR-M05** 확인되지 않은 날짜나 참가 자격을 추론하지 않습니다.
+- **FR-M06** 핵심 날짜 충돌이 해결되지 않으면 자동 일정 생성을 막습니다.
 
-### Recommendation
+### 추천
 
-- **FR-R01** Produce a 0–100 heuristic score with category breakdown.
-- **FR-R02** Generate reasons grounded in the profile and notice text.
-- **FR-R03** Assign `긴급`, `중요`, or `참고` using relevance and deadline rules.
-- **FR-R04** Keep parsing confidence separate from recommendation score.
-- **FR-R05** Do not present the score as a probability of success.
+- **FR-R01** 항목별 세부 점수를 포함한 0–100 범위의 휴리스틱 점수를 생성합니다.
+- **FR-R02** 사용자 프로필과 공고 원문에 근거한 추천 이유를 만듭니다.
+- **FR-R03** 적합도와 마감 규칙에 따라 `긴급`, `중요`, `참고`를 지정합니다.
+- **FR-R04** 파싱 신뢰도와 추천 점수를 분리합니다.
+- **FR-R05** 적합도 점수를 수상·선발 확률로 표현하지 않습니다.
 
 ### Notion
 
-- **FR-N01** Ensure required properties without deleting existing pages.
-- **FR-N02** Upsert by stable ID or source URL.
-- **FR-N03** Preserve user-controlled states and manual notes.
-- **FR-N04** Preserve calendar event IDs and successful partial results.
-- **FR-N05** Store parse warnings and sync errors visibly.
+- **FR-N01** 기존 페이지를 삭제하지 않고 필요한 속성만 보완합니다.
+- **FR-N02** 안정적인 ID 또는 원문 URL을 기준으로 upsert합니다.
+- **FR-N03** 사용자가 정한 상태와 수동 메모를 보존합니다.
+- **FR-N04** Calendar event ID와 일부 성공 결과를 보존합니다.
+- **FR-N05** 파싱 경고와 동기화 오류를 사용자가 볼 수 있게 저장합니다.
 
 ### Slack
 
-- **FR-S01** Sort recommendations by priority, score, and deadline.
-- **FR-S02** Include deadline, score, reasons, conflict status, and Notion link where available.
-- **FR-S03** Support dry-run payload generation.
-- **FR-S04** Never treat a Slack interaction as participation approval.
+- **FR-S01** 우선순위, 점수, 마감일 순으로 추천을 정렬합니다.
+- **FR-S02** 마감일, 점수, 추천 이유, 충돌 상태, 가능한 경우 Notion 링크를 포함합니다.
+- **FR-S03** 실제 전송 없이 payload만 확인하는 dry-run을 지원합니다.
+- **FR-S04** Slack 상호작용을 참가 승인으로 해석하지 않습니다.
 
-### Calendar and approval
+### Calendar와 승인
 
-- **FR-G01** Only `Accept` items may enter calendar planning.
-- **FR-G02** Generate up to three event kinds: deadline, D-3 preparation, and event/start.
-- **FR-G03** Attach stable request and idempotency identifiers.
-- **FR-G04** Apply success and failure per event, not per batch.
-- **FR-G05** Transition to `Scheduled` only after required event creation succeeds.
-- **FR-G06** Keep failed items in a recoverable state such as `CalendarError`.
-- **FR-G07** Re-running the same synchronization must not duplicate existing event kinds.
+- **FR-G01** `Accept` 항목만 Calendar 계획 단계로 보낼 수 있습니다.
+- **FR-G02** 공고별로 최대 세 종류의 일정을 만듭니다: 마감, D-3 준비, 행사·시작일.
+- **FR-G03** 안정적인 request ID와 idempotency ID를 부여합니다.
+- **FR-G04** 성공·실패는 batch 전체가 아니라 개별 일정 단위로 반영합니다.
+- **FR-G05** 필요한 일정 생성이 성공한 뒤에만 `Scheduled`로 변경합니다.
+- **FR-G06** 실패 항목은 `CalendarError`처럼 재시도 가능한 상태로 남깁니다.
+- **FR-G07** 같은 동기화를 다시 실행해도 이미 생성된 일정 종류가 중복되지 않아야 합니다.
 
-## 5. State machine
+## 5. 공고 상태 흐름
 
 ```text
 New
-  ↓ parse + score complete
+  ↓ 파싱·점수 계산 완료
 Recommended
-  ├─ user → Accept → Scheduling → Scheduled
-  ├─ user → Hold
-  └─ user → Reject
+  ├─ 사용자 → Accept → Scheduling → Scheduled
+  ├─ 사용자 → Hold
+  └─ 사용자 → Reject
 
-Parsing ambiguity → NeedsReview
-Calendar failure → CalendarError → retry → Scheduling/Scheduled
+파싱 모호성 → NeedsReview
+Calendar 실패 → CalendarError → 재시도 → Scheduling/Scheduled
 ```
 
-Routine collection must not move user-controlled states backwards.
+정기 수집은 사용자가 정한 상태를 이전 단계로 되돌리지 않습니다.
 
-## 6. Data contracts
+## 6. 데이터 계약
 
-Canonical Pydantic models are defined in `src/campus_mate/models.py`.
+기준 Pydantic 모델은 `src/campus_mate/models.py`에 정의되어 있습니다.
 
-Core cross-phase objects:
+단계 간 주요 객체는 다음과 같습니다.
 
 - `UserProfile`
 - `SourcePage`
@@ -133,77 +134,77 @@ Core cross-phase objects:
 - `CalendarEventResult`
 - `WorkflowReport`
 
-Safe example files are under `examples/`. Runtime `data/`, `artifacts/`, and `_workspace/` are generated locally and ignored by Git.
+안전한 예제 파일은 `examples/`에 있습니다. 실행 중 생성되는 `data/`, `artifacts/`, `_workspace/`는 로컬에서만 사용하며 Git에서 제외합니다.
 
-## 7. Non-functional requirements
+## 7. 비기능 요구사항
 
-### Safety and privacy
+### 안전과 개인정보 보호
 
-- Secrets come only from environment variables or Timely Secrets.
-- Runtime profile and schedule data are excluded from Git.
-- Logs and handoffs must not contain token values.
-- Hooks and CI scan common credential patterns.
+- 인증정보는 환경변수 또는 Timely Secrets에서만 읽습니다.
+- 실제 사용자 프로필과 일정 데이터는 Git에서 제외합니다.
+- 로그와 인계 문서에 token 값을 남기지 않습니다.
+- Hook과 CI에서 일반적인 인증정보 패턴을 검사합니다.
 
-### Reliability
+### 안정성
 
-- Network operations use explicit timeouts and bounded retries.
-- One item failure must not abort unrelated items.
-- Upserts and calendar requests are idempotent.
-- Partial success must be preserved.
+- 네트워크 작업에는 명시적인 timeout과 제한된 retry를 적용합니다.
+- 한 항목의 실패가 관련 없는 다른 항목을 중단하지 않아야 합니다.
+- Notion upsert와 Calendar 요청은 멱등성을 가져야 합니다.
+- 일부 성공 결과는 실패와 분리해 보존합니다.
 
-### Explainability
+### 설명 가능성
 
-- Parsed fields retain evidence and confidence.
-- Recommendation reasons identify matched profile and notice attributes.
-- Review states explain why automatic processing stopped.
+- 파싱된 필드에는 근거와 신뢰도를 남깁니다.
+- 추천 이유에는 일치한 프로필·공고 속성을 명시합니다.
+- 자동 처리가 중단되면 검토 상태에 그 이유를 남깁니다.
 
-### Maintainability
+### 유지보수성
 
-- Six Agent definitions remain the stable functional architecture.
-- Twelve Skill definitions remain the stable method contracts.
-- Python code is organized by source, parsing, service, integration, and workflow layers.
-- Contract and behavior changes require tests or explicit validation updates.
+- 여섯 Agent는 고정된 기능 아키텍처로 유지합니다.
+- 열두 Skill은 고정된 방법 계약으로 유지합니다.
+- Python 코드는 수집, 파싱, 서비스, 외부 연동, 워크플로 계층으로 분리합니다.
+- 계약 또는 동작을 변경할 때 테스트나 명시적 검증 절차도 함께 갱신합니다.
 
-## 8. Acceptance scenarios
+## 8. 완료 시나리오
 
-### A. Fixture demo
+### A. Fixture 시연
 
-1. Import the example profile.
-2. Parse the fixture notice.
-3. Produce evidence-aware structured fields.
-4. Compute score, priority, and reasons.
-5. Store through the JSON backend.
-6. Re-run without creating a duplicate.
+1. 예제 프로필을 불러옵니다.
+2. fixture 공고를 파싱합니다.
+3. 필드별 근거가 포함된 구조화 결과를 만듭니다.
+4. 점수, 우선순위, 추천 이유를 계산합니다.
+5. JSON 저장소에 저장합니다.
+6. 같은 작업을 다시 실행해도 중복 항목이 생기지 않는지 확인합니다.
 
-### B. Live daily collection
+### B. 실시간 일일 수집
 
-1. Timely starts `daily-collector` at 08:00.
-2. Linkareer notices are discovered and parsed.
-3. Recommendations are calculated.
-4. Notion pages are created or updated without destructive refresh.
-5. Optional free/busy input updates conflict status.
+1. Timely가 08:00에 `daily-collector`를 시작합니다.
+2. Linkareer 공고를 찾고 파싱합니다.
+3. 추천 결과를 계산합니다.
+4. Notion 페이지를 삭제 없이 생성하거나 갱신합니다.
+5. free/busy 입력이 있으면 일정 충돌 상태를 갱신합니다.
 
-### C. Briefing
+### C. 브리핑
 
-1. Timely starts `slack-briefing` at 09:00.
-2. Recommended items are sorted and formatted.
-3. Dry-run is available for review.
-4. Configured delivery posts one Slack briefing.
+1. Timely가 09:00에 `slack-briefing`을 시작합니다.
+2. 추천 공고를 정렬하고 메시지 형식으로 만듭니다.
+3. dry-run으로 내용을 먼저 확인할 수 있습니다.
+4. 설정된 환경에서는 Slack 브리핑 한 건을 전송합니다.
 
-### D. Approval and scheduling
+### D. 승인과 일정 반영
 
-1. The user changes a Notion item to `Accept`.
-2. `accept-sync` creates an idempotent request manifest.
-3. Timely/Composio creates calendar events.
-4. Python applies results by request ID.
-5. Confirmed items become `Scheduled`; failures remain recoverable.
+1. 사용자가 Notion 공고를 `Accept`로 변경합니다.
+2. `accept-sync`가 중복 방지 식별자를 포함한 요청 목록을 만듭니다.
+3. Timely/Composio가 Calendar 일정을 생성합니다.
+4. Python이 request ID를 기준으로 결과를 반영합니다.
+5. 성공이 확인된 공고는 `Scheduled`가 되고, 실패한 공고는 재시도 가능한 상태로 남습니다.
 
-## 9. Definition of done
+## 9. 완료 기준
 
-A release is complete when:
+릴리스는 다음 조건을 모두 만족할 때 완료됩니다.
 
-- Harness validation passes with 6 agents and 12 skills.
-- Unit tests, lint, compile, and secret scan pass.
-- Fixture demo completes without duplicate storage.
-- No presentation file, live token, runtime profile, personal schedule, or execution log is committed.
-- README accurately separates implemented, optional, and unsupported capabilities.
+- 6개 Agent와 12개 Skill에 대한 Harness 검증을 통과합니다.
+- 단위 테스트, lint, compile, secret scan을 모두 통과합니다.
+- fixture 시연을 반복 실행해도 중복 저장이 발생하지 않습니다.
+- 발표자료, 실제 token, 실제 프로필, 개인 일정, 실행 로그가 저장소에 포함되지 않습니다.
+- README가 구현된 기능, 선택 기능, 미지원 기능을 정확히 구분합니다.

@@ -1,11 +1,11 @@
-# Slack Brief Format
+# Slack 브리핑 형식
 
-Recommended structure:
+권장 구성은 다음과 같습니다.
 
-1. Header: date and recommendation count
-2. Urgent section
-3. Other recommended items
-4. Conflict/needs-review note
-5. Call to action: review and change status in Notion
+1. 날짜와 추천 공고 수를 포함한 제목
+2. 긴급 공고 영역
+3. 그 밖의 추천 공고
+4. 일정 충돌 또는 검토 필요 안내
+5. Notion에서 확인하고 상태를 변경하라는 안내
 
-Each item should show title, deadline, score, priority, one or two reasons, and dashboard/source link.
+각 공고에는 제목, 마감일, 적합도, 우선순위, 추천 이유 1–2개, Notion 또는 원문 링크를 표시합니다.

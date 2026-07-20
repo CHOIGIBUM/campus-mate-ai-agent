@@ -1,9 +1,9 @@
-# Calendar Connector Contract
+# Calendar 커넥터 계약
 
-Event kinds:
+일정 종류는 다음과 같습니다.
 
-- `deadline`: `[마감] title`, usually 23:00 KST
-- `preparation`: `[D-3 준비] title`, usually 09:00 KST
-- `event`: `[행사] title`, usually 09:00 KST
+- `deadline`: `[마감] 공고명`, 일반적으로 23:00 KST
+- `preparation`: `[D-3 준비] 공고명`, 일반적으로 09:00 KST
+- `event`: `[행사] 공고명`, 일반적으로 09:00 KST
 
-Each result must preserve the request ID. A connector timeout is a failure, not an implied success. Keep event IDs in the opportunity record to avoid duplicates.
+모든 결과에는 원래 request ID가 유지되어야 합니다. 커넥터 timeout은 성공으로 간주하지 않고 실패로 처리합니다. 중복 생성을 막기 위해 생성된 event ID를 공고 레코드에 보존합니다.

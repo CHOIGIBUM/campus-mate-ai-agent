@@ -1,12 +1,12 @@
-# Field Precedence
+# 필드 출처 우선순위
 
-| Source | Default confidence band | Notes |
+| 출처 | 기본 신뢰도 범위 | 설명 |
 |---|---:|---|
-| JSON-LD | 0.90–1.00 | explicit structured page data |
-| Next.js state | 0.90–1.00 | site application state |
-| Visible HTML | 0.75–0.95 | labels and text blocks |
-| OCR | 0.45–0.80 | digit/text recognition risk |
-| Vision | 0.45–0.80 | useful for poster-only content |
-| Fallback/manual | explicit | must be identified |
+| JSON-LD | 0.90–1.00 | 페이지에 명시된 구조화 데이터 |
+| Next.js 상태 | 0.90–1.00 | 사이트 애플리케이션 상태 데이터 |
+| 화면 표시 HTML | 0.75–0.95 | 라벨과 텍스트 영역 |
+| OCR | 0.45–0.80 | 숫자·문자 인식 오류 가능성 |
+| Vision | 0.45–0.80 | 포스터에만 있는 정보 보완 |
+| Fallback·수동 입력 | 별도 명시 | 출처를 명확히 표시해야 함 |
 
-Do not select a value only because its numeric confidence is marginally higher when the source is semantically weaker and conflicts with an explicit primary field. Record the conflict for review.
+수치상 신뢰도가 조금 높다는 이유만으로 의미적으로 약한 출처가 명시적인 1차 출처와 충돌하는 값을 선택하지 않습니다. 충돌은 검토 대상으로 기록합니다.

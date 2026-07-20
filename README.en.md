@@ -114,7 +114,7 @@ Recurring collection never overwrites user-selected `Accept`, `Hold`, `Reject`, 
 | `timely/automations.yaml` | Recurring schedules and external connector handoffs |
 | `tests/` | Verification for parsing, scoring, state preservation, and calendar synchronization |
 
-Detailed contracts are documented in [`CLAUDE.md`](./CLAUDE.md), [`spec.md`](./spec.md), [`workflow.md`](./workflow.md), and [`role-table.md`](./role-table.md).
+Detailed operating contracts are maintained in Korean in [`CLAUDE.md`](./CLAUDE.md), [`spec.md`](./spec.md), [`workflow.md`](./workflow.md), and [`role-table.md`](./role-table.md).
 
 ### Six functional Agents
 

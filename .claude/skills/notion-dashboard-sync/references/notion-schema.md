@@ -1,6 +1,6 @@
-# Notion Schema
+# Notion 스키마
 
-Core properties may include:
+주요 속성은 다음 항목으로 구성될 수 있습니다.
 
 - 공모전명 / Title
 - 원문 링크
@@ -15,11 +15,11 @@ Core properties may include:
 - 적합도
 - 우선순위
 - 추천 이유
-- 상태 (legacy alias `상태(새)` supported)
+- 상태 (`상태(새)` 기존 이름도 지원)
 - 일정 충돌
-- 요약 (legacy alias `메모` supported)
-- stable opportunity ID
-- calendar event IDs
-- sync error
+- 요약 (`메모` 기존 이름도 지원)
+- 안정적인 공고 ID
+- Calendar event ID
+- 동기화 오류
 
-The implementation only adds missing required properties and preserves existing pages.
+구현은 필요한 속성 중 누락된 항목만 추가하며 기존 페이지를 보존합니다.

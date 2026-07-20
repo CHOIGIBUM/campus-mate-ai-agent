@@ -1,14 +1,14 @@
-# Scoring Rubric
+# 적합도 점수 기준표
 
-The implementation is the source of truth; this rubric explains intent.
+실제 구현 코드가 최종 기준이며, 이 표는 점수 설계 의도를 설명합니다.
 
-| Category | Typical max | Evidence |
+| 항목 | 일반적인 최대점 | 사용 근거 |
 |---|---:|---|
-| Major/domain | 25 | major terms in title/summary/type |
-| Interests/keywords | 25 | direct keyword matches |
-| Career/activity | 20 | desired role and activity type |
-| Eligibility | 15 | explicit student/grade/major conditions |
-| Deadline/readiness | 10 | remaining time and preparation feasibility |
-| Region/format | 5 | preferred region or online format |
+| 전공·분야 | 25 | 제목·요약·유형에 나타난 전공 관련 표현 |
+| 관심 분야·키워드 | 25 | 직접적인 키워드 일치 |
+| 희망 직무·활동 | 20 | 희망 역할과 활동 유형 |
+| 참가 자격 | 15 | 대학생·학년·전공 등 명시된 조건 |
+| 마감·준비 가능성 | 10 | 남은 기간과 준비 가능성 |
+| 지역·진행 방식 | 5 | 선호 지역 또는 온라인 진행 여부 |
 
-Reasons should explain the largest positive and negative factors. Do not use opaque “AI confidence” wording.
+추천 이유는 가장 큰 긍정 요인과 부정 요인을 설명해야 합니다. 의미가 불분명한 “AI 신뢰도” 표현은 사용하지 않습니다.
